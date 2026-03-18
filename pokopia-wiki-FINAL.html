@@ -1,0 +1,899 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Pokopia Wiki — Guide Communautaire</title>
+<link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@400;500;600;700&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<style>
+  :root {
+    --green-deep: #2d5a27;
+    --green-mid: #4a8c3f;
+    --green-light: #7bc67a;
+    --green-pale: #c8e6c5;
+    --green-ultra: #e8f5e7;
+    --sky: #87ceeb;
+    --sky-light: #e0f4ff;
+    --earth: #8b5e3c;
+    --gold: #f5c842;
+    --gold-light: #fff3c0;
+    --red: #e74c3c;
+    --blue: #3498db;
+    --purple: #9b59b6;
+    --orange: #e67e22;
+    --teal: #1abc9c;
+    --bg: #f0f8ed;
+    --card: #ffffff;
+    --text: #2c3e2d;
+    --text-muted: #6b8f6b;
+    --border: #c8dfc5;
+    --shadow: 0 4px 20px rgba(45,90,39,0.1);
+    --shadow-hover: 0 8px 30px rgba(45,90,39,0.18);
+  }
+  *{box-sizing:border-box;margin:0;padding:0;}
+  body{font-family:'Nunito',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;overflow-x:hidden;}
+  body::before{content:'';position:fixed;inset:0;background-image:radial-gradient(circle at 20% 20%,rgba(123,198,122,.08) 0%,transparent 50%),radial-gradient(circle at 80% 80%,rgba(135,206,235,.08) 0%,transparent 50%);pointer-events:none;z-index:0;}
+
+  /* HEADER */
+  header{background:linear-gradient(135deg,var(--green-deep) 0%,var(--green-mid) 50%,#3d7a55 100%);position:sticky;top:0;z-index:100;box-shadow:0 4px 20px rgba(0,0,0,.2);}
+  .header-inner{max-width:1200px;margin:0 auto;padding:12px 24px;display:flex;align-items:center;gap:14px;}
+  .logo{font-family:'Quicksand',sans-serif;font-weight:700;font-size:1.5rem;color:white;display:flex;align-items:center;gap:10px;text-shadow:0 2px 8px rgba(0,0,0,.3);}
+  .logo-icon{width:34px;height:34px;background:var(--gold);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:1.1rem;box-shadow:0 2px 8px rgba(0,0,0,.2);animation:pulse 3s ease-in-out infinite;}
+  @keyframes pulse{0%,100%{transform:scale(1);}50%{transform:scale(1.06);}}
+  .logo-sub{font-size:.58rem;font-weight:400;color:rgba(255,255,255,.7);display:block;letter-spacing:2px;text-transform:uppercase;}
+  .header-right{margin-left:auto;display:flex;align-items:center;gap:10px;}
+  .search-wrap{position:relative;}
+  .search-input{width:260px;padding:9px 40px 9px 14px;border:2px solid rgba(255,255,255,.2);border-radius:50px;background:rgba(255,255,255,.15);color:white;font-family:'Nunito',sans-serif;font-size:.875rem;outline:none;transition:all .3s;backdrop-filter:blur(8px);}
+  .search-input::placeholder{color:rgba(255,255,255,.6);}
+  .search-input:focus{background:rgba(255,255,255,.25);border-color:rgba(255,255,255,.5);}
+  .search-icon{position:absolute;right:13px;top:50%;transform:translateY(-50%);color:rgba(255,255,255,.7);pointer-events:none;}
+
+  /* AUTH BUTTON */
+  .auth-btn{padding:8px 18px;border-radius:50px;border:2px solid rgba(255,255,255,.4);background:rgba(255,255,255,.15);color:white;font-family:'Nunito',sans-serif;font-size:.85rem;font-weight:700;cursor:pointer;transition:all .25s;white-space:nowrap;display:flex;align-items:center;gap:6px;}
+  .auth-btn:hover{background:rgba(255,255,255,.3);border-color:rgba(255,255,255,.7);}
+  .avatar{width:30px;height:30px;border-radius:50%;background:var(--gold);display:flex;align-items:center;justify-content:center;font-size:.85rem;font-weight:700;color:var(--green-deep);cursor:pointer;border:2px solid rgba(255,255,255,.4);}
+
+  /* NAV */
+  nav{background:rgba(255,255,255,.97);border-bottom:2px solid var(--border);position:sticky;top:59px;z-index:99;box-shadow:0 2px 10px rgba(0,0,0,.06);}
+  .nav-inner{max-width:1200px;margin:0 auto;display:flex;overflow-x:auto;scrollbar-width:none;gap:4px;padding:0 16px;}
+  .nav-inner::-webkit-scrollbar{display:none;}
+  .nav-tab{padding:13px 18px;border:none;background:none;color:var(--text-muted);font-family:'Nunito',sans-serif;font-size:.875rem;font-weight:700;cursor:pointer;white-space:nowrap;border-bottom:3px solid transparent;transition:all .25s;display:flex;align-items:center;gap:6px;}
+  .nav-tab:hover{color:var(--green-mid);}
+  .nav-tab.active{color:var(--green-deep);border-bottom-color:var(--green-mid);background:var(--green-ultra);}
+
+  /* MAIN */
+  main{max-width:1200px;margin:0 auto;padding:24px 24px 80px;position:relative;z-index:1;}
+  .section{display:none;animation:fadeIn .35s ease;}
+  .section.active{display:block;}
+  @keyframes fadeIn{from{opacity:0;transform:translateY(10px);}to{opacity:1;transform:translateY(0);}}
+
+  /* SECTION HEADER */
+  .section-header{display:flex;align-items:center;gap:12px;margin-bottom:22px;padding-bottom:14px;border-bottom:2px solid var(--border);}
+  .section-icon{width:42px;height:42px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:1.3rem;box-shadow:var(--shadow);}
+  .section-title{font-family:'Quicksand',sans-serif;font-size:1.4rem;font-weight:700;color:var(--green-deep);}
+  .section-desc{font-size:.82rem;color:var(--text-muted);margin-top:2px;}
+
+  /* CARDS */
+  .cards-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(270px,1fr));gap:14px;}
+  .cards-grid-2{display:grid;grid-template-columns:repeat(auto-fill,minmax(340px,1fr));gap:14px;}
+  .card{background:var(--card);border:2px solid var(--border);border-radius:14px;padding:18px;transition:all .25s;position:relative;overflow:hidden;}
+  .card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,var(--green-light),var(--green-mid));opacity:0;transition:opacity .25s;}
+  .card:hover{box-shadow:var(--shadow-hover);transform:translateY(-2px);border-color:var(--green-light);}
+  .card:hover::before{opacity:1;}
+  .card-title{font-family:'Quicksand',sans-serif;font-weight:700;font-size:1rem;color:var(--green-deep);margin-bottom:8px;display:flex;align-items:center;gap:7px;}
+  .card-content{font-size:.875rem;color:var(--text);line-height:1.6;}
+
+  /* TAGS */
+  .tag{display:inline-flex;align-items:center;gap:3px;padding:2px 9px;border-radius:50px;font-size:.72rem;font-weight:700;margin:2px;}
+  .tag-green{background:var(--green-pale);color:var(--green-deep);}
+  .tag-blue{background:#dbeafe;color:#1e40af;}
+  .tag-yellow{background:var(--gold-light);color:#92600a;}
+  .tag-red{background:#fde8e8;color:#9b1c1c;}
+  .tag-purple{background:#ede9fe;color:#5b21b6;}
+  .tag-teal{background:#ccfbf1;color:#065f46;}
+  .tag-orange{background:#ffedd5;color:#9a3412;}
+
+  /* HERO */
+  .hero-banner{background:linear-gradient(135deg,var(--green-deep) 0%,#3a7d44 40%,#2980b9 100%);border-radius:18px;padding:28px;margin-bottom:24px;color:white;position:relative;overflow:hidden;box-shadow:var(--shadow-hover);}
+  .hero-banner::before{content:'🌿';position:absolute;right:-20px;top:-20px;font-size:11rem;opacity:.06;transform:rotate(-15deg);pointer-events:none;}
+  .hero-title{font-family:'Quicksand',sans-serif;font-size:1.8rem;font-weight:700;margin-bottom:8px;}
+  .hero-text{font-size:.9rem;opacity:.9;line-height:1.7;max-width:680px;}
+  .hero-stats{display:flex;gap:14px;margin-top:18px;flex-wrap:wrap;}
+  .hero-stat{background:rgba(255,255,255,.15);backdrop-filter:blur(8px);border:1px solid rgba(255,255,255,.2);padding:10px 16px;border-radius:10px;text-align:center;min-width:90px;}
+  .hero-stat-num{font-family:'Quicksand',sans-serif;font-size:1.5rem;font-weight:700;display:block;}
+  .hero-stat-label{font-size:.7rem;opacity:.8;text-transform:uppercase;letter-spacing:1px;}
+
+  /* CALLOUTS */
+  .tip{background:var(--gold-light);border:2px solid #f5c842;border-radius:10px;padding:12px 16px;margin:10px 0;font-size:.875rem;display:flex;gap:10px;align-items:flex-start;}
+  .alert{background:#fde8e8;border:2px solid #f5a5a5;border-radius:10px;padding:12px 16px;margin:10px 0;font-size:.875rem;display:flex;gap:10px;}
+  .info-box{background:var(--sky-light);border:2px solid var(--sky);border-radius:10px;padding:12px 16px;margin:10px 0;font-size:.875rem;display:flex;gap:10px;}
+  .tip-icon{font-size:1rem;flex-shrink:0;margin-top:1px;}
+
+  /* TABLE */
+  .data-table{width:100%;border-collapse:collapse;font-size:.85rem;background:white;border-radius:12px;overflow:hidden;box-shadow:var(--shadow);margin:12px 0;}
+  .data-table thead tr{background:var(--green-deep);color:white;}
+  .data-table th{padding:11px 14px;text-align:left;font-weight:700;font-size:.77rem;text-transform:uppercase;letter-spacing:.5px;}
+  .data-table td{padding:10px 14px;border-bottom:1px solid var(--border);color:var(--text);}
+  .data-table tbody tr:hover{background:var(--green-ultra);}
+  .data-table tbody tr:last-child td{border-bottom:none;}
+
+  /* ACCORDION */
+  .accordion-item{background:white;border:2px solid var(--border);border-radius:12px;margin-bottom:10px;overflow:hidden;transition:all .2s;}
+  .accordion-item:hover{border-color:var(--green-light);}
+  .accordion-header{padding:14px 18px;cursor:pointer;display:flex;align-items:center;justify-content:space-between;font-weight:700;color:var(--green-deep);user-select:none;font-family:'Quicksand',sans-serif;font-size:.95rem;}
+  .accordion-header span:first-child{display:flex;align-items:center;gap:8px;}
+  .accordion-arrow{font-size:.7rem;transition:transform .3s;color:var(--text-muted);}
+  .accordion-item.open .accordion-arrow{transform:rotate(180deg);}
+  .accordion-body{max-height:0;overflow:hidden;transition:max-height .35s ease;}
+  .accordion-item.open .accordion-body{max-height:2000px;}
+  .accordion-content{padding:16px 18px;font-size:.875rem;line-height:1.7;color:var(--text);border-top:1px solid var(--border);}
+
+  /* POKEMON */
+  .pokemon-list{display:grid;grid-template-columns:repeat(auto-fill,minmax(190px,1fr));gap:12px;}
+  .pokemon-card{background:white;border:2px solid var(--border);border-radius:14px;padding:14px;text-align:center;transition:all .25s;}
+  .pokemon-card:hover{transform:translateY(-4px);box-shadow:var(--shadow-hover);border-color:var(--green-light);}
+  .pokemon-num{font-size:.7rem;color:var(--text-muted);font-weight:700;text-transform:uppercase;letter-spacing:1px;margin-bottom:4px;}
+  .pokemon-emoji{font-size:2rem;margin:4px 0 6px;display:block;}
+  .pokemon-name{font-family:'Quicksand',sans-serif;font-weight:700;font-size:.9rem;color:var(--green-deep);margin-bottom:5px;}
+  .pokemon-info{font-size:.76rem;color:var(--text-muted);line-height:1.5;}
+
+  /* FILTER */
+  .filter-row{display:flex;gap:8px;margin-bottom:16px;flex-wrap:wrap;align-items:center;}
+  .filter-btn{padding:6px 14px;border-radius:50px;border:2px solid var(--border);background:white;color:var(--text-muted);font-family:'Nunito',sans-serif;font-size:.8rem;font-weight:700;cursor:pointer;transition:all .2s;}
+  .filter-btn:hover,.filter-btn.active{background:var(--green-deep);color:white;border-color:var(--green-deep);}
+
+  /* CAPACITY ITEM */
+  .capacity-item{background:white;border:2px solid var(--border);border-radius:14px;padding:16px 18px;margin-bottom:10px;display:flex;gap:14px;align-items:flex-start;transition:all .2s;}
+  .capacity-item:hover{border-color:var(--green-light);box-shadow:var(--shadow);}
+  .capacity-icon{width:44px;height:44px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:1.4rem;flex-shrink:0;}
+  .capacity-title{font-family:'Quicksand',sans-serif;font-weight:700;font-size:.95rem;color:var(--green-deep);margin-bottom:4px;}
+  .capacity-desc{font-size:.84rem;color:var(--text);line-height:1.6;margin-bottom:5px;}
+  .progress-bar{background:var(--green-pale);border-radius:50px;height:7px;overflow:hidden;margin-top:6px;}
+  .progress-fill{height:100%;border-radius:50px;background:linear-gradient(90deg,var(--green-light),var(--green-mid));transition:width .6s ease;}
+
+  /* REGION CARD */
+  .region-card{background:white;border:2px solid var(--border);border-radius:14px;overflow:hidden;transition:all .25s;}
+  .region-card:hover{box-shadow:var(--shadow-hover);transform:translateY(-3px);}
+  .region-header{padding:16px 18px;font-family:'Quicksand',sans-serif;font-weight:700;font-size:1.05rem;color:white;display:flex;align-items:center;gap:10px;}
+  .region-body{padding:14px 18px;font-size:.875rem;line-height:1.6;}
+
+  /* ==================== COMMUNITY FEATURES ==================== */
+
+  /* COMMUNITY SECTION */
+  .community-layout{display:grid;grid-template-columns:1fr 340px;gap:20px;}
+  @media(max-width:900px){.community-layout{grid-template-columns:1fr;}}
+
+  /* TIP CARD */
+  .community-tip-card{background:white;border:2px solid var(--border);border-radius:14px;padding:18px;margin-bottom:12px;transition:all .2s;}
+  .community-tip-card:hover{border-color:var(--green-light);box-shadow:var(--shadow);}
+  .tip-card-header{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:10px;}
+  .tip-card-meta{display:flex;align-items:center;gap:8px;}
+  .tip-avatar{width:32px;height:32px;border-radius:50%;background:var(--green-mid);color:white;display:flex;align-items:center;justify-content:center;font-size:.85rem;font-weight:700;flex-shrink:0;}
+  .tip-author{font-weight:700;font-size:.85rem;color:var(--green-deep);}
+  .tip-date{font-size:.72rem;color:var(--text-muted);}
+  .tip-category-badge{padding:3px 10px;border-radius:50px;font-size:.72rem;font-weight:700;}
+  .tip-text{font-size:.875rem;line-height:1.65;color:var(--text);margin-bottom:12px;}
+  .tip-actions{display:flex;align-items:center;gap:12px;}
+  .vote-btn{display:flex;align-items:center;gap:5px;padding:5px 12px;border-radius:50px;border:2px solid var(--border);background:white;font-family:'Nunito',sans-serif;font-size:.8rem;font-weight:700;cursor:pointer;transition:all .2s;color:var(--text-muted);}
+  .vote-btn:hover,.vote-btn.voted{background:var(--green-deep);color:white;border-color:var(--green-deep);}
+  .vote-btn.voted{cursor:default;}
+  .comment-toggle-btn{display:flex;align-items:center;gap:5px;padding:5px 12px;border-radius:50px;border:2px solid var(--border);background:white;font-family:'Nunito',sans-serif;font-size:.8rem;font-weight:700;cursor:pointer;transition:all .2s;color:var(--text-muted);}
+  .comment-toggle-btn:hover{background:var(--sky-light);border-color:var(--sky);color:var(--blue);}
+
+  /* COMMENTS */
+  .comments-section{margin-top:14px;padding-top:14px;border-top:1px solid var(--border);display:none;}
+  .comments-section.open{display:block;}
+  .comment-item{display:flex;gap:10px;margin-bottom:12px;}
+  .comment-avatar{width:26px;height:26px;border-radius:50%;background:var(--green-pale);color:var(--green-deep);display:flex;align-items:center;justify-content:center;font-size:.75rem;font-weight:700;flex-shrink:0;margin-top:2px;}
+  .comment-bubble{background:var(--green-ultra);border-radius:0 10px 10px 10px;padding:8px 12px;flex:1;}
+  .comment-author{font-weight:700;font-size:.78rem;color:var(--green-deep);}
+  .comment-text{font-size:.82rem;color:var(--text);line-height:1.5;margin-top:2px;}
+  .comment-input-row{display:flex;gap:8px;margin-top:10px;}
+  .comment-input{flex:1;padding:8px 12px;border:2px solid var(--border);border-radius:10px;font-family:'Nunito',sans-serif;font-size:.84rem;outline:none;transition:border-color .2s;}
+  .comment-input:focus{border-color:var(--green-mid);}
+  .comment-submit{padding:8px 14px;border-radius:10px;border:none;background:var(--green-mid);color:white;font-family:'Nunito',sans-serif;font-size:.84rem;font-weight:700;cursor:pointer;transition:all .2s;white-space:nowrap;}
+  .comment-submit:hover{background:var(--green-deep);}
+
+  /* ADD TIP FORM */
+  .add-tip-panel{background:white;border:2px solid var(--border);border-radius:14px;padding:20px;position:sticky;top:120px;}
+  .panel-title{font-family:'Quicksand',sans-serif;font-weight:700;font-size:1.05rem;color:var(--green-deep);margin-bottom:16px;display:flex;align-items:center;gap:8px;}
+  .form-group{margin-bottom:14px;}
+  .form-label{display:block;font-size:.8rem;font-weight:700;color:var(--text-muted);margin-bottom:5px;text-transform:uppercase;letter-spacing:.5px;}
+  .form-input,.form-select,.form-textarea{width:100%;padding:9px 12px;border:2px solid var(--border);border-radius:10px;font-family:'Nunito',sans-serif;font-size:.875rem;outline:none;transition:border-color .2s;color:var(--text);background:white;}
+  .form-input:focus,.form-select:focus,.form-textarea:focus{border-color:var(--green-mid);}
+  .form-textarea{resize:vertical;min-height:90px;line-height:1.5;}
+  .form-submit{width:100%;padding:11px;border-radius:10px;border:none;background:linear-gradient(135deg,var(--green-mid),var(--green-deep));color:white;font-family:'Nunito',sans-serif;font-size:.9rem;font-weight:700;cursor:pointer;transition:all .25s;box-shadow:0 4px 12px rgba(74,140,63,.3);}
+  .form-submit:hover{transform:translateY(-1px);box-shadow:0 6px 18px rgba(74,140,63,.4);}
+  .form-submit:disabled{opacity:.5;cursor:not-allowed;transform:none;}
+
+  /* AUTH MODAL */
+  .modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:500;display:flex;align-items:center;justify-content:center;padding:20px;backdrop-filter:blur(4px);}
+  .modal-overlay.hidden{display:none;}
+  .modal{background:white;border-radius:20px;padding:32px;width:100%;max-width:420px;position:relative;box-shadow:0 20px 60px rgba(0,0,0,.2);}
+  .modal-close{position:absolute;top:16px;right:16px;width:30px;height:30px;border-radius:50%;border:none;background:var(--border);cursor:pointer;font-size:1rem;display:flex;align-items:center;justify-content:center;color:var(--text-muted);transition:all .2s;}
+  .modal-close:hover{background:var(--green-pale);color:var(--green-deep);}
+  .modal-title{font-family:'Quicksand',sans-serif;font-weight:700;font-size:1.4rem;color:var(--green-deep);margin-bottom:6px;text-align:center;}
+  .modal-sub{font-size:.85rem;color:var(--text-muted);text-align:center;margin-bottom:24px;}
+  .modal-tabs{display:flex;border-radius:10px;overflow:hidden;border:2px solid var(--border);margin-bottom:22px;}
+  .modal-tab{flex:1;padding:9px;border:none;background:white;font-family:'Nunito',sans-serif;font-size:.875rem;font-weight:700;cursor:pointer;color:var(--text-muted);transition:all .2s;}
+  .modal-tab.active{background:var(--green-deep);color:white;}
+  .auth-form{display:none;}
+  .auth-form.active{display:block;}
+  .auth-input{width:100%;padding:11px 14px;border:2px solid var(--border);border-radius:10px;font-family:'Nunito',sans-serif;font-size:.9rem;outline:none;transition:border-color .2s;margin-bottom:12px;color:var(--text);}
+  .auth-input:focus{border-color:var(--green-mid);}
+  .auth-submit{width:100%;padding:12px;border-radius:10px;border:none;background:linear-gradient(135deg,var(--green-mid),var(--green-deep));color:white;font-family:'Nunito',sans-serif;font-size:.95rem;font-weight:700;cursor:pointer;transition:all .25s;box-shadow:0 4px 12px rgba(74,140,63,.3);}
+  .auth-submit:hover{transform:translateY(-1px);}
+  .auth-error{background:#fde8e8;border:1px solid #f5a5a5;border-radius:8px;padding:10px 14px;font-size:.83rem;color:#9b1c1c;margin-bottom:12px;display:none;}
+  .auth-error.show{display:block;}
+  .auth-success{background:var(--green-ultra);border:1px solid var(--green-light);border-radius:8px;padding:10px 14px;font-size:.83rem;color:var(--green-deep);margin-bottom:12px;display:none;}
+  .auth-success.show{display:block;}
+
+  /* USER MENU */
+  .user-menu{position:absolute;top:52px;right:0;background:white;border:2px solid var(--border);border-radius:14px;box-shadow:0 10px 40px rgba(0,0,0,.15);min-width:200px;z-index:300;padding:10px 0;}
+  .user-menu.hidden{display:none;}
+  .user-menu-item{padding:10px 18px;cursor:pointer;font-size:.875rem;color:var(--text);transition:background .15s;display:flex;align-items:center;gap:8px;}
+  .user-menu-item:hover{background:var(--green-ultra);color:var(--green-deep);}
+  .user-menu-item.danger{color:var(--red);}
+  .user-menu-item.danger:hover{background:#fde8e8;}
+  .user-menu-sep{height:1px;background:var(--border);margin:6px 0;}
+  .user-email{padding:10px 18px 6px;font-size:.78rem;color:var(--text-muted);font-weight:700;}
+  .header-avatar-wrap{position:relative;}
+
+  /* SEARCH RESULTS */
+  #search-results{display:none;position:fixed;top:120px;left:50%;transform:translateX(-50%);width:90%;max-width:560px;background:white;border:2px solid var(--border);border-radius:14px;box-shadow:0 20px 60px rgba(0,0,0,.15);z-index:200;max-height:380px;overflow-y:auto;}
+  #search-results.visible{display:block;}
+  .search-result-item{padding:11px 16px;border-bottom:1px solid var(--border);cursor:pointer;transition:background .15s;}
+  .search-result-item:last-child{border-bottom:none;}
+  .search-result-item:hover{background:var(--green-ultra);}
+  .search-result-title{font-weight:700;color:var(--green-deep);font-size:.875rem;}
+  .search-result-cat{font-size:.72rem;color:var(--text-muted);margin-top:2px;}
+  #overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.25);z-index:150;backdrop-filter:blur(2px);}
+  #overlay.visible{display:block;}
+
+  /* LOADING / EMPTY STATES */
+  .loading-state{text-align:center;padding:40px 20px;color:var(--text-muted);}
+  .loading-spinner{width:36px;height:36px;border:3px solid var(--green-pale);border-top-color:var(--green-mid);border-radius:50%;animation:spin .8s linear infinite;margin:0 auto 12px;}
+  @keyframes spin{to{transform:rotate(360deg);}}
+  .empty-state{text-align:center;padding:50px 20px;color:var(--text-muted);}
+  .empty-icon{font-size:3rem;margin-bottom:12px;}
+  .empty-title{font-family:'Quicksand',sans-serif;font-weight:700;font-size:1.1rem;color:var(--green-deep);margin-bottom:6px;}
+
+  /* SCROLL TOP */
+  #scroll-top{position:fixed;bottom:22px;right:22px;width:42px;height:42px;border-radius:50%;background:var(--green-mid);color:white;border:none;font-size:1rem;cursor:pointer;box-shadow:0 4px 16px rgba(0,0,0,.2);opacity:0;transform:translateY(20px);transition:all .3s;z-index:50;}
+  #scroll-top.visible{opacity:1;transform:translateY(0);}
+
+  /* TOAST */
+  .toast{position:fixed;bottom:70px;left:50%;transform:translateX(-50%) translateY(20px);background:var(--green-deep);color:white;padding:10px 22px;border-radius:50px;font-size:.875rem;font-weight:700;z-index:600;opacity:0;transition:all .3s;pointer-events:none;}
+  .toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
+
+  @media(max-width:640px){
+    .header-inner{padding:10px 14px;gap:10px;}
+    .logo{font-size:1.2rem;}
+    .search-input{width:180px;}
+    main{padding:16px 14px 80px;}
+    .hero-title{font-size:1.4rem;}
+  }
+</style>
+</head>
+<body>
+
+<!-- AUTH MODAL -->
+<div class="modal-overlay hidden" id="auth-modal">
+  <div class="modal">
+    <button class="modal-close" onclick="closeAuthModal()">✕</button>
+    <div style="text-align:center;font-size:2.5rem;margin-bottom:12px;">🌿</div>
+    <div class="modal-title">Rejoindre la communauté</div>
+    <div class="modal-sub">Connecte-toi pour partager tes astuces et commenter !</div>
+    <div class="modal-tabs">
+      <button class="modal-tab active" onclick="switchAuthTab('login')">Se connecter</button>
+      <button class="modal-tab" onclick="switchAuthTab('register')">S'inscrire</button>
+    </div>
+    <!-- LOGIN -->
+    <div class="auth-form active" id="auth-login">
+      <div class="auth-error" id="login-error"></div>
+      <div class="auth-success" id="login-success"></div>
+      <input type="email" class="auth-input" id="login-email" placeholder="ton@email.com" autocomplete="email">
+      <input type="password" class="auth-input" id="login-password" placeholder="Mot de passe" autocomplete="current-password">
+      <button class="auth-submit" onclick="handleLogin()">🌿 Se connecter</button>
+    </div>
+    <!-- REGISTER -->
+    <div class="auth-form" id="auth-register">
+      <div class="auth-error" id="register-error"></div>
+      <div class="auth-success" id="register-success"></div>
+      <input type="text" class="auth-input" id="register-username" placeholder="Pseudo (ex: DresseurPokopia)" autocomplete="username">
+      <input type="email" class="auth-input" id="register-email" placeholder="ton@email.com" autocomplete="email">
+      <input type="password" class="auth-input" id="register-password" placeholder="Mot de passe (8 car. min)" autocomplete="new-password">
+      <button class="auth-submit" onclick="handleRegister()">🎮 Créer mon compte</button>
+    </div>
+  </div>
+</div>
+
+<header>
+  <div class="header-inner">
+    <div class="logo">
+      <div class="logo-icon">🌿</div>
+      <div>Pokopia Wiki<span class="logo-sub">Guide Communautaire</span></div>
+    </div>
+    <div class="header-right">
+      <div class="search-wrap">
+        <input type="text" class="search-input" id="search-input" placeholder="Rechercher…" autocomplete="off">
+        <span class="search-icon">🔍</span>
+      </div>
+      <!-- Auth area -->
+      <div id="auth-area">
+        <button class="auth-btn" onclick="openAuthModal()">🎮 Connexion</button>
+      </div>
+    </div>
+  </div>
+</header>
+
+<nav>
+  <div class="nav-inner">
+    <button class="nav-tab active" data-tab="accueil" onclick="showTab('accueil',this)">🏠 Accueil</button>
+    <button class="nav-tab" data-tab="regions" onclick="showTab('regions',this)">🗺️ Régions</button>
+    <button class="nav-tab" data-tab="capacites" onclick="showTab('capacites',this)">⚡ Capacités</button>
+    <button class="nav-tab" data-tab="habitats" onclick="showTab('habitats',this)">🏡 Habitats</button>
+    <button class="nav-tab" data-tab="ressources" onclick="showTab('ressources',this)">⛏️ Ressources</button>
+    <button class="nav-tab" data-tab="pokemon-speciaux" onclick="showTab('pokemon-speciaux',this)">✨ Pokémon</button>
+    <button class="nav-tab" data-tab="quotidien" onclick="showTab('quotidien',this)">📅 Quotidien</button>
+    <button class="nav-tab" data-tab="communaute" onclick="showTab('communaute',this)">💬 Communauté</button>
+  </div>
+</nav>
+
+<div id="overlay"></div>
+<div id="search-results"></div>
+<div class="toast" id="toast"></div>
+
+<main>
+
+  <!-- ACCUEIL -->
+  <div class="section active" id="section-accueil">
+    <div class="hero-banner">
+      <div class="hero-title">🌿 Bienvenue dans Pokémon Pokopia</div>
+      <p class="hero-text">Spin-off cosy exclusif Nintendo Switch 2 (mars 2026) développé par GAME FREAK & KOEI TECMO. Incarnez Métamorph et restaurez une île abandonnée pour y faire revenir les Pokémon. Construisez, explorez, créez des habitats — sans aucun combat traditionnel.</p>
+      <div class="hero-stats">
+        <div class="hero-stat"><span class="hero-stat-num">300+</span><span class="hero-stat-label">Pokémon</span></div>
+        <div class="hero-stat"><span class="hero-stat-num">4</span><span class="hero-stat-label">Régions</span></div>
+        <div class="hero-stat"><span class="hero-stat-num">9</span><span class="hero-stat-label">Générations</span></div>
+        <div class="hero-stat"><span class="hero-stat-num">4</span><span class="hero-stat-label">Joueurs Coop</span></div>
+      </div>
+    </div>
+    <div class="cards-grid">
+      <div class="card" onclick="showTab('regions',null)" style="cursor:pointer">
+        <div class="card-title">🗺️ Régions</div>
+        <div class="card-content"><p>4 zones : Terrassec, Collinangle, Grisemer et Flotiles-Millefeux. Chacune a son propre scénario.</p><p style="margin-top:8px"><span class="tag tag-green">+ Île-Nuage (coop)</span> <span class="tag tag-blue">+ Îles-Rêves</span></p></div>
+      </div>
+      <div class="card" onclick="showTab('capacites',null)" style="cursor:pointer">
+        <div class="card-title">⚡ Capacités</div>
+        <div class="card-content"><p>Débloquez des capacités en faisant venir des Pokémon. De Pistolet à O jusqu'au puissant Vol Magnétik.</p><p style="margin-top:8px"><span class="tag tag-blue">6 capacités clés</span> <span class="tag tag-teal">Progression</span></p></div>
+      </div>
+      <div class="card" onclick="showTab('habitats',null)" style="cursor:pointer">
+        <div class="card-title">🏡 Habitadex</div>
+        <div class="card-content"><p>Construisez des habitats spécifiques pour attirer les Pokémon. Chaque habitat attire différentes espèces.</p><p style="margin-top:8px"><span class="tag tag-green">Hautes herbes</span> <span class="tag tag-blue">Bord de mer</span></p></div>
+      </div>
+      <div class="card" onclick="showTab('ressources',null)" style="cursor:pointer">
+        <div class="card-title">⛏️ Ressources</div>
+        <div class="card-content"><p>Collectez des matériaux et transformez-les via les spécialités des Pokémon (combustion, broyage, recyclage).</p><p style="margin-top:8px"><span class="tag tag-yellow">Brique</span> <span class="tag tag-orange">Béton</span></p></div>
+      </div>
+      <div class="card" onclick="showTab('communaute',null)" style="cursor:pointer">
+        <div class="card-title">💬 Communauté</div>
+        <div class="card-content"><p>Partage tes astuces, vote pour les meilleures, commente et aide la communauté à progresser !</p><p style="margin-top:8px"><span class="tag tag-purple">Astuces joueurs</span> <span class="tag tag-teal">Votes</span></p></div>
+      </div>
+      <div class="card" onclick="showTab('quotidien',null)" style="cursor:pointer">
+        <div class="card-title">📅 Quotidien</div>
+        <div class="card-content"><p>7 activités à faire chaque jour : défis PC, boutique, distributeurs, récolte des transformations…</p><p style="margin-top:8px"><span class="tag tag-yellow">Défis PC</span> <span class="tag tag-green">Boutique</span></p></div>
+      </div>
+    </div>
+    <div class="tip" style="margin-top:18px"><span class="tip-icon">💡</span><div><strong>Conseil débutant :</strong> Commencez par apprendre <em>Pistolet à O</em> auprès de Carapuce pour arroser les herbes sèches. C'est la toute première étape dans Terrassec !</div></div>
+    <div class="info-box"><span class="tip-icon">ℹ️</span><div><strong>Pas de Shiny !</strong> Chaque Pokémon est unique. Pas de capture classique avec Poké Ball — c'est l'environnement qui attire les créatures.</div></div>
+  </div>
+
+  <!-- RÉGIONS -->
+  <div class="section" id="section-regions">
+    <div class="section-header">
+      <div class="section-icon" style="background:linear-gradient(135deg,#a8e6a3,#4a8c3f)">🗺️</div>
+      <div><div class="section-title">Régions de Pokopia</div><div class="section-desc">4 zones principales + zones spéciales</div></div>
+    </div>
+    <div class="cards-grid-2">
+      <div class="region-card"><div class="region-header" style="background:linear-gradient(135deg,#4a8c3f,#2d5a27)">🌱 Terrassec <span style="font-size:.8rem;opacity:.8;margin-left:auto">Zone 1 — Début</span></div><div class="region-body"><p style="margin-bottom:8px">La région de départ. Herbeux et côtier. C'est ici que vous rencontrez le <strong>Prof. Bouldeneu</strong> et apprenez les bases.</p><p><strong>Pokémon clés :</strong> Carapuce, Bulbizarre, Ramoloss, Onix</p><p style="margin-top:8px"><strong>Objectif :</strong> Compléter les requêtes de Ramoloss, Bulbizarre et Carapuce dans cet ordre.</p><div class="tip" style="margin-top:10px"><span class="tip-icon">⚠️</span><div>Si l'humidité est bloquée à 71% pour Ramoloss, il ne suffit pas d'utiliser Pistolet à O — il faut aussi <strong>compléter les requêtes de Bulbizarre et Carapuce</strong> pour que Ramoloss déclenche la pluie et fasse monter l'humidité.</div></div><p style="margin-top:10px;font-size:.78rem;color:var(--text-muted)"><span class="tag tag-green">Baie Mepo</span> <span class="tag tag-yellow">Accès : Collinangle & Grisemer</span></p></div></div>
+      <div class="region-card"><div class="region-header" style="background:linear-gradient(135deg,#8b5e3c,#6b4226)">🏔️ Collinangle <span style="font-size:.8rem;opacity:.8;margin-left:auto">Zone 2 — Ouest</span></div><div class="region-body"><p style="margin-bottom:8px">Région montagneuse à l'ouest. Biomes rocheux et ressources minérales avancées.</p><p><strong>Spécialités :</strong> Minéraux et matériaux de construction avancés.</p><p style="margin-top:8px;font-size:.78rem;color:var(--text-muted)"><span class="tag tag-orange">Terrain rocheux</span> <span class="tag tag-yellow">Minerais</span></p></div></div>
+      <div class="region-card"><div class="region-header" style="background:linear-gradient(135deg,#2980b9,#1a5f8b)">⚡ Grisemer <span style="font-size:.8rem;opacity:.8;margin-left:auto">Zone 3 — Est</span></div><div class="region-body"><p style="margin-bottom:8px">Zone industrielle et électrique. Générateurs, systèmes électriques et DJ Motisma.</p><p><strong>Mécanique clé :</strong> Fabriquez un générateur, alimentez-le par poteau électrique.</p><p style="margin-top:8px"><strong>Pokémon notables :</strong> Motisma (DJ), Magnéti</p><p style="margin-top:8px;font-size:.78rem;color:var(--text-muted)"><span class="tag tag-blue">Électricité ×50</span></p></div></div>
+      <div class="region-card"><div class="region-header" style="background:linear-gradient(135deg,#e74c3c,#a93226)">🏝️ Flotiles-Millefeux <span style="font-size:.8rem;opacity:.8;margin-left:auto">Zone 4 — Finale</span></div><div class="region-body"><p style="margin-bottom:8px">La région finale et la plus complexe. Archipel avec ressources rares.</p><p><strong>Ressources :</strong> Calcaire (béton), déchets de papier (Porygon), fragments de cristal</p><div class="tip" style="margin-top:8px"><span class="tip-icon">🎯</span><div>Qualité niveau 5 dans les 4 régions requise pour les crédits.</div></div><p style="margin-top:8px;font-size:.78rem;color:var(--text-muted)"><span class="tag tag-red">Zone finale</span> <span class="tag tag-purple">Cristaux & Béton</span></p></div></div>
+    </div>
+    <div class="section-header" style="margin-top:24px"><div class="section-icon" style="background:linear-gradient(135deg,#87ceeb,#2980b9)">🏖️</div><div><div class="section-title">Zones Spéciales</div></div></div>
+    <div class="cards-grid">
+      <div class="card"><div class="card-title">☁️ Île-Nuage</div><div class="card-content"><p>Mode coopératif créatif jusqu'à <strong>4 joueurs</strong>. Toutes les ressources et biomes sont présents. Aucune limite à la création.</p><p style="margin-top:8px"><span class="tag tag-blue">Multijoueur</span> <span class="tag tag-teal">Créatif</span></p></div></div>
+      <div class="card"><div class="card-title">🌙 Îles-Rêves</div><div class="card-content"><p>Nécessite un Pokémon et un objet spécifiques. Utiles pour les ressources rares et certains Pokémon Légendaires.</p><p style="margin-top:8px"><span class="tag tag-purple">Farm ressources</span> <span class="tag tag-red">Légendaires</span></p></div></div>
+    </div>
+  </div>
+
+  <!-- CAPACITÉS -->
+  <div class="section" id="section-capacites">
+    <div class="section-header"><div class="section-icon" style="background:linear-gradient(135deg,#ffd700,#e67e22)">⚡</div><div><div class="section-title">Capacités de Métamorph</div><div class="section-desc">Débloquez-les en faisant venir des Pokémon spécifiques</div></div></div>
+    <div class="info-box"><span class="tip-icon">ℹ️</span><div>Dans Pokopia, les capacités ne servent plus au combat mais deviennent des <strong>outils essentiels pour explorer et bâtir</strong>.</div></div>
+    <div style="margin-top:14px">
+      <div class="capacity-item"><div class="capacity-icon" style="background:#dbeafe">💧</div><div><div class="capacity-title">Pistolet à O</div><div class="capacity-desc">Première capacité du jeu. Arrose les herbes sèches pour leur redonner vie. Essentiel dans Terrassec.</div><div><span class="tag tag-blue">Pokémon : Carapuce</span> <span class="tag tag-green">Dès le début</span></div><div class="progress-bar"><div class="progress-fill" style="width:100%"></div></div></div></div>
+      <div class="capacity-item"><div class="capacity-icon" style="background:#fde8e8">🪨</div><div><div class="capacity-title">Éclate-Roc</div><div class="capacity-desc">Brise des rochers et ouvre de nouveaux passages, notamment le passage sud de Terrassec.</div><div><span class="tag tag-orange">Pokémon : Tygnon</span> <span class="tag tag-green">Mi-jeu</span></div><div class="progress-bar"><div class="progress-fill" style="width:75%"></div></div></div></div>
+      <div class="capacity-item"><div class="capacity-icon" style="background:#ccfbf1">🌊</div><div><div class="capacity-title">Cascade</div><div class="capacity-desc">Navigue et accède à des zones aquatiques bloquées par l'eau.</div><div><span class="tag tag-blue">Type : Eau</span> <span class="tag tag-teal">Zones avancées</span></div><div class="progress-bar"><div class="progress-fill" style="width:60%"></div></div></div></div>
+      <div class="capacity-item"><div class="capacity-icon" style="background:#ede9fe">🪂</div><div><div class="capacity-title">Vol Plané</div><div class="capacity-desc">Plane depuis les hauteurs pour explorer les zones en contrebas rapidement.</div><div><span class="tag tag-purple">Mobilité</span> <span class="tag tag-orange">Collinangle</span></div><div class="progress-bar"><div class="progress-fill" style="width:50%"></div></div></div></div>
+      <div class="capacity-item" style="border-color:#f5c842"><div class="capacity-icon" style="background:var(--gold-light)">🧲</div><div><div class="capacity-title">Vol Magnétik ⭐ (Ultime)</div><div class="capacity-desc">La capacité finale. Permet de créer sans contraintes. Débloquée après avoir terminé les crédits grâce à Magnéti.</div><div><span class="tag tag-yellow">Pokémon : Magnéti</span> <span class="tag tag-red">Post-jeu</span></div><div class="progress-bar"><div class="progress-fill" style="width:100%;background:linear-gradient(90deg,#f5c842,#e67e22)"></div></div></div></div>
+    </div>
+  </div>
+
+  <!-- HABITATS -->
+  <div class="section" id="section-habitats">
+    <div class="section-header"><div class="section-icon" style="background:linear-gradient(135deg,#a8e6a3,#2d5a27)">🏡</div><div><div class="section-title">Habitadex — Tous les Habitats</div><div class="section-desc">Construisez des habitats pour attirer les Pokémon</div></div></div>
+    <div class="info-box"><span class="tip-icon">🔑</span><div><strong>Débloquer les schémas :</strong> Cherchez des traces étincelantes de Pokémon dans l'environnement, ou complétez les requêtes de vos Pokémon.</div></div>
+    <h3 style="font-family:'Quicksand',sans-serif;color:var(--green-deep);margin:18px 0 12px;font-size:1.05rem">🌿 Habitats Herbes Hautes</h3>
+    <table class="data-table"><thead><tr><th>Habitat</th><th>Construction requise</th><th>Description</th></tr></thead><tbody>
+      <tr><td><strong>Herbes Hautes (Base)</strong></td><td>4× Herbe verte</td><td>La cachette parfaite pour les petits Pokémon</td></tr>
+      <tr><td><strong>Herbes à l'Ombre</strong></td><td>4× Herbe verte + 1× Grand arbre</td><td>Des herbes à l'ombre d'un arbre</td></tr>
+      <tr><td><strong>Herbes Rocheuses</strong></td><td>4× Herbe verte + 1× Grosse pierre</td><td>Parfait pour jouer à cache-cache</td></tr>
+      <tr><td><strong>Herbes au Bord de l'Eau</strong></td><td>4× Herbe verte + 2× Étendue d'eau</td><td>Herbes irriguées, resplendissantes</td></tr>
+      <tr><td><strong>Herbes Salées</strong></td><td>4× Herbe verte + Bord de mer</td><td>S'épanouissent malgré l'eau salée</td></tr>
+      <tr><td><strong>Herbes en Altitude</strong></td><td>4× Herbe verte + Zone élevée</td><td>Herbes fraîches en altitude</td></tr>
+    </tbody></table>
+    <h3 style="font-family:'Quicksand',sans-serif;color:var(--green-deep);margin:18px 0 12px;font-size:1.05rem">🎣 Habitats Bord de Mer</h3>
+    <table class="data-table"><thead><tr><th>Habitat</th><th>Construction</th><th>Pokémon attiré</th></tr></thead><tbody>
+      <tr><td><strong>Coin Pêche</strong></td><td>1× Canne à pêche + 1× Siège (rivage)</td><td>Métamorph</td></tr>
+      <tr><td><strong>Lieu de Rituel Zénith</strong></td><td>2× Morphe-météo (soleil) + 1× Plat (Baie Mepo)</td><td>Cacnea</td></tr>
+    </tbody></table>
+    <div class="tip" style="margin-top:18px"><span class="tip-icon">🌴</span><div>Pour les <strong>Pokémon Légendaires</strong> des Îles-Rêves, rassemblez 6 types de peluches différentes via la Collection de Peluches.</div></div>
+  </div>
+
+  <!-- RESSOURCES -->
+  <div class="section" id="section-ressources">
+    <div class="section-header"><div class="section-icon" style="background:linear-gradient(135deg,#f5c842,#e67e22)">⛏️</div><div><div class="section-title">Ressources & Craft</div><div class="section-desc">Matériaux, transformation et spécialités des Pokémon</div></div></div>
+    <div class="tip"><span class="tip-icon">📦</span><div><strong>Astuce organisation :</strong> Installez une <em>boîte commune</em> pour automatiser la transformation grâce aux spécialités Pokémon.</div></div>
+    <h3 style="font-family:'Quicksand',sans-serif;color:var(--green-deep);margin:18px 0 12px;font-size:1.05rem">🔧 Spécialités de Transformation</h3>
+    <table class="data-table"><thead><tr><th>Spécialité</th><th>Entrant</th><th>Résultat</th><th>Pokémon</th></tr></thead><tbody>
+      <tr><td><span class="tag tag-red">🔥 Combustion</span></td><td>Sable</td><td>Verre</td><td>—</td></tr>
+      <tr><td><span class="tag tag-red">🔥 Combustion</span></td><td>Argile</td><td>Brique ×40</td><td>—</td></tr>
+      <tr><td><span class="tag tag-red">🔥 Combustion</span></td><td>Minerai d'or</td><td>Lingot d'or ×20</td><td>—</td></tr>
+      <tr><td><span class="tag tag-orange">⚙️ Broyage</span></td><td>Calcaire</td><td>Béton ×50</td><td>—</td></tr>
+      <tr><td><span class="tag tag-teal">♻️ Recyclage</span></td><td>Déchets papier</td><td>Papier ×10</td><td>Porygon</td></tr>
+      <tr><td><span class="tag tag-purple">🐑 Désordre</span></td><td>—</td><td>Coton ×5</td><td>Wattouat</td></tr>
+      <tr><td><span class="tag tag-yellow">🐝 Apireine</span></td><td>Bois</td><td>Meubles</td><td>Apireine</td></tr>
+      <tr><td><span class="tag tag-blue">🏗️ Forgelina</span></td><td>Béton</td><td>Forgeliroue ×5</td><td>Forgelina</td></tr>
+    </tbody></table>
+    <h3 style="font-family:'Quicksand',sans-serif;color:var(--green-deep);margin:18px 0 12px;font-size:1.05rem">📋 Défi d'Initiation — Liste complète</h3>
+    <div class="alert"><span class="tip-icon">⚠️</span><div>Ces objets sont nécessaires pour terminer le jeu et voir les crédits.</div></div>
+    <table class="data-table" style="margin-top:10px"><thead><tr><th>Objet</th><th>Qté</th><th>Comment l'obtenir</th></tr></thead><tbody>
+      <tr><td>Baie Mepo</td><td>×5</td><td>Partout dans Terrassec et autres zones</td></tr>
+      <tr><td>Coton</td><td>×5</td><td>Wattouat — spécialité désordre</td></tr>
+      <tr><td>Pile de papier</td><td>×10</td><td>Porygon (recyclage) — déchets de Flotiles</td></tr>
+      <tr><td>Brique</td><td>×40</td><td>Combustion → argile</td></tr>
+      <tr><td>Lingot d'or</td><td>×20</td><td>Combustion → minerai d'or</td></tr>
+      <tr><td>Béton</td><td>×50</td><td>Bétonnière + broyage → calcaire</td></tr>
+      <tr><td>Électricité</td><td>×50</td><td>Générateur + poteau électrique (Grisemer)</td></tr>
+      <tr><td>Fragment de cristal</td><td>×10</td><td>Collines de Flotiles-Millefeux</td></tr>
+      <tr><td>Forgeliroue</td><td>×5</td><td>Donner du béton à Forgelina</td></tr>
+    </tbody></table>
+  </div>
+
+  <!-- POKÉMON SPÉCIAUX -->
+  <div class="section" id="section-pokemon-speciaux">
+    <div class="section-header"><div class="section-icon" style="background:linear-gradient(135deg,#f5c842,#e74c3c)">✨</div><div><div class="section-title">Pokémon Spéciaux</div><div class="section-desc">Formes inédites, légendaires et Pokémon utilitaires</div></div></div>
+    <div class="filter-row">
+      <button class="filter-btn active" onclick="filterPokemon('all',this)">Tous</button>
+      <button class="filter-btn" onclick="filterPokemon('forme',this)">✨ Formes Inédites</button>
+      <button class="filter-btn" onclick="filterPokemon('legendaire',this)">⭐ Légendaires</button>
+      <button class="filter-btn" onclick="filterPokemon('utilitaire',this)">🔧 Utilitaires</button>
+    </div>
+    <div class="pokemon-list" id="pokemon-grid">
+      <div class="pokemon-card" data-category="forme"><div class="pokemon-num">Forme Spéciale</div><span class="pokemon-emoji">⚡</span><div class="pokemon-name">Pikapâle</div><div class="pokemon-info">Pikachu décoloré aux oreilles tombantes</div><div style="margin-top:6px"><span class="tag tag-purple">Forme inédite</span></div></div>
+      <div class="pokemon-card" data-category="forme"><div class="pokemon-num">Forme Spéciale</div><span class="pokemon-emoji">🌿</span><div class="pokemon-name">Ronflex Moussu</div><div class="pokemon-info">Ronflex recouvert de mousse avec une fleur sur la tête</div><div style="margin-top:6px"><span class="tag tag-purple">Forme inédite</span></div></div>
+      <div class="pokemon-card" data-category="forme"><div class="pokemon-num">Forme Spéciale</div><span class="pokemon-emoji">🎵</span><div class="pokemon-name">DJ Motisma</div><div class="pokemon-info">Motisma dans une minichaîne hi-fi — Zone : Grisemer</div><div style="margin-top:6px"><span class="tag tag-blue">Grisemer</span></div></div>
+      <div class="pokemon-card" data-category="forme"><div class="pokemon-num">PNJ Spécial</div><span class="pokemon-emoji">👓</span><div class="pokemon-name">Prof. Bouldeneu</div><div class="pokemon-info">Guide du joueur tout au long de l'aventure</div><div style="margin-top:6px"><span class="tag tag-teal">PNJ essentiel</span></div></div>
+      <div class="pokemon-card" data-category="legendaire"><div class="pokemon-num">Légendaire</div><span class="pokemon-emoji">🌊</span><div class="pokemon-name">Kyogre</div><div class="pokemon-info">Légendaire de l'eau. Habitat spécifique requis.</div><div style="margin-top:6px"><span class="tag tag-red">⭐ Légendaire</span></div></div>
+      <div class="pokemon-card" data-category="legendaire"><div class="pokemon-num">Légendaire</div><span class="pokemon-emoji">🧬</span><div class="pokemon-name">Mewtwo</div><div class="pokemon-info">Légendaire psychique. Grandes constructions requises.</div><div style="margin-top:6px"><span class="tag tag-red">⭐ Légendaire</span></div></div>
+      <div class="pokemon-card" data-category="legendaire"><div class="pokemon-num">Légendaire</div><span class="pokemon-emoji">🌅</span><div class="pokemon-name">Ho-Oh</div><div class="pokemon-info">Légendaire feu/vol. Énormes constructions en fin de partie.</div><div style="margin-top:6px"><span class="tag tag-red">⭐ Légendaire</span></div></div>
+      <div class="pokemon-card" data-category="utilitaire" style="border-color:#f5c842"><div class="pokemon-num">Top Utilitaire</div><span class="pokemon-emoji">⚙️</span><div class="pokemon-name">Forgelina</div><div class="pokemon-info">Accélère les chantiers. Béton → Forgeliroues. Indispensable pour le Défi d'Initiation.</div><div style="margin-top:6px"><span class="tag tag-yellow">Top tier</span></div></div>
+      <div class="pokemon-card" data-category="utilitaire"><div class="pokemon-num">Endgame</div><span class="pokemon-emoji">🧲</span><div class="pokemon-name">Magnéti</div><div class="pokemon-info">Débloque Vol Magnétik, la capacité ultime.</div><div style="margin-top:6px"><span class="tag tag-yellow">Vol Magnétik</span></div></div>
+      <div class="pokemon-card" data-category="utilitaire"><div class="pokemon-num">Utilitaire</div><span class="pokemon-emoji">💻</span><div class="pokemon-name">Porygon</div><div class="pokemon-info">Recyclage : déchets papier → piles de papier.</div><div style="margin-top:6px"><span class="tag tag-teal">♻️ Recyclage</span></div></div>
+      <div class="pokemon-card" data-category="utilitaire"><div class="pokemon-num">Utilitaire</div><span class="pokemon-emoji">🐝</span><div class="pokemon-name">Apireine</div><div class="pokemon-info">Bois → meubles automatiquement.</div><div style="margin-top:6px"><span class="tag tag-yellow">🪑 Meubles</span></div></div>
+      <div class="pokemon-card" data-category="utilitaire"><div class="pokemon-num">Utilitaire</div><span class="pokemon-emoji">🐑</span><div class="pokemon-name">Wattouat</div><div class="pokemon-info">Coton naturel ×5 via désordre. Requis Défi d'Initiation.</div><div style="margin-top:6px"><span class="tag tag-green">🐑 Coton</span></div></div>
+    </div>
+  </div>
+
+  <!-- QUOTIDIEN -->
+  <div class="section" id="section-quotidien">
+    <div class="section-header"><div class="section-icon" style="background:linear-gradient(135deg,#87ceeb,#3498db)">📅</div><div><div class="section-title">Routine Quotidienne</div><div class="section-desc">7 activités essentielles à faire chaque jour</div></div></div>
+    <div class="info-box"><span class="tip-icon">⏰</span><div>Pokopia fonctionne en <strong>temps réel</strong>. Les activités journalières se réinitialisent toutes les 24h.</div></div>
+    <div style="margin-top:14px">
+      <div class="accordion-item open"><div class="accordion-header" onclick="toggleAccordion(this)"><span>🛒 1. Boutique PC</span><span class="accordion-arrow">▼</span></div><div class="accordion-body"><div class="accordion-content"><p>Chaque jour, le PC propose une sélection d'articles. Le niveau boutique = somme des niveaux de qualité de chaque région.<br><br>Ex: Terrassec (3) + Collinangle (4) = Boutique niveau 7.</p><div class="tip" style="margin-top:10px"><span class="tip-icon">💡</span><div>Les niveaux élevés débloquent des plans de craft et objets rares !</div></div></div></div></div>
+      <div class="accordion-item"><div class="accordion-header" onclick="toggleAccordion(this)"><span>🎯 2. Défis PC — Pokéflouz</span><span class="accordion-arrow">▼</span></div><div class="accordion-body"><div class="accordion-content"><p>3 défis quotidiens disponibles sur le PC. Les compléter rapporte des Pokéflouz. L'équivalent des Miles Nook d'Animal Crossing.</p></div></div></div>
+      <div class="accordion-item"><div class="accordion-header" onclick="toggleAccordion(this)"><span>🎁 3. Cadeaux Mystère en ligne</span><span class="accordion-arrow">▼</span></div><div class="accordion-body"><div class="accordion-content"><p>Des événements limités dans le temps ajoutent de nouveaux Pokémon et habitats. Premier événement : <em>"Des Aigrettes pour Granivol"</em>.</p></div></div></div>
+      <div class="accordion-item"><div class="accordion-header" onclick="toggleAccordion(this)"><span>🏡 4. Tour des Habitats</span><span class="accordion-arrow">▼</span></div><div class="accordion-body"><div class="accordion-content"><p>Faites le tour de tous vos habitats — des Pokémon surprises peuvent être apparus depuis votre dernière visite !</p></div></div></div>
+      <div class="accordion-item"><div class="accordion-header" onclick="toggleAccordion(this)"><span>🥤 5. Distributeurs de Boisson</span><span class="accordion-arrow">▼</span></div><div class="accordion-body"><div class="accordion-content"><p>Chaque distributeur alimenté peut être utilisé <strong>une fois par jour</strong> pour obtenir une canette (eau thermale, boueuse, lave…).</p><div class="tip" style="margin-top:10px"><span class="tip-icon">💡</span><div>Importez des eaux entre régions pour créer des habitats inédits !</div></div></div></div></div>
+      <div class="accordion-item"><div class="accordion-header" onclick="toggleAccordion(this)"><span>⚙️ 6. Récolte des Transformations</span><span class="accordion-arrow">▼</span></div><div class="accordion-body"><div class="accordion-content"><p>Vos Pokémon ont transformé les matériaux pendant votre absence. ⚠️ Limite de 10 par pack — récoltez régulièrement.</p></div></div></div>
+      <div class="accordion-item"><div class="accordion-header" onclick="toggleAccordion(this)"><span>💬 7. Requêtes des Pokémon</span><span class="accordion-arrow">▼</span></div><div class="accordion-body"><div class="accordion-content"><p>Vérifiez les nouvelles requêtes. Les compléter débloque des schémas d'habitats et fait venir de nouveaux amis.</p></div></div></div>
+    </div>
+  </div>
+
+  <!-- COMMUNAUTÉ -->
+  <div class="section" id="section-communaute">
+    <div class="section-header">
+      <div class="section-icon" style="background:linear-gradient(135deg,#9b59b6,#6c3483)">💬</div>
+      <div><div class="section-title">Espace Communautaire</div><div class="section-desc">Astuces partagées par les joueurs — votez et commentez !</div></div>
+    </div>
+
+    <div class="community-layout">
+      <!-- FEED -->
+      <div>
+        <!-- FILTER -->
+        <div class="filter-row" style="margin-bottom:16px">
+          <button class="filter-btn active" onclick="loadTips('all',this)">Toutes</button>
+          <button class="filter-btn" onclick="loadTips('Exploration',this)">🗺️ Exploration</button>
+          <button class="filter-btn" onclick="loadTips('Construction',this)">🏗️ Construction</button>
+          <button class="filter-btn" onclick="loadTips('Ressources',this)">⛏️ Ressources</button>
+          <button class="filter-btn" onclick="loadTips('Habitats',this)">🏡 Habitats</button>
+          <button class="filter-btn" onclick="loadTips('Pokémon',this)">✨ Pokémon</button>
+        </div>
+        <div id="tips-feed">
+          <div class="loading-state"><div class="loading-spinner"></div>Chargement des astuces…</div>
+        </div>
+      </div>
+
+      <!-- SIDEBAR -->
+      <div>
+        <div class="add-tip-panel" id="add-tip-panel">
+          <div class="panel-title">✏️ Partager une astuce</div>
+          <div id="add-tip-login-prompt" style="text-align:center;padding:20px 0">
+            <div style="font-size:2.5rem;margin-bottom:12px">🌿</div>
+            <p style="font-size:.875rem;color:var(--text-muted);margin-bottom:16px">Connecte-toi pour partager tes astuces avec la communauté !</p>
+            <button class="form-submit" onclick="openAuthModal()">🎮 Se connecter</button>
+          </div>
+          <div id="add-tip-form" style="display:none">
+            <div class="form-group">
+              <label class="form-label">Catégorie</label>
+              <select class="form-select" id="tip-category">
+                <option value="Exploration">🗺️ Exploration</option>
+                <option value="Construction">🏗️ Construction</option>
+                <option value="Ressources">⛏️ Ressources</option>
+                <option value="Habitats">🏡 Habitats</option>
+                <option value="Pokémon">✨ Pokémon</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Titre de l'astuce</label>
+              <input type="text" class="form-input" id="tip-title" placeholder="Ex: Comment obtenir la glace facilement" maxlength="100">
+            </div>
+            <div class="form-group">
+              <label class="form-label">Détails</label>
+              <textarea class="form-textarea" id="tip-text" placeholder="Explique ton astuce en détail…" maxlength="500"></textarea>
+            </div>
+            <button class="form-submit" id="submit-tip-btn" onclick="submitTip()">🌿 Partager l'astuce</button>
+          </div>
+        </div>
+
+        <!-- STATS -->
+        <div style="background:white;border:2px solid var(--border);border-radius:14px;padding:18px;margin-top:14px">
+          <div class="panel-title">📊 Statistiques</div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+            <div style="text-align:center;padding:12px;background:var(--green-ultra);border-radius:10px">
+              <div style="font-family:'Quicksand',sans-serif;font-size:1.6rem;font-weight:700;color:var(--green-deep)" id="stat-tips">—</div>
+              <div style="font-size:.72rem;color:var(--text-muted);text-transform:uppercase;letter-spacing:.5px">Astuces</div>
+            </div>
+            <div style="text-align:center;padding:12px;background:var(--gold-light);border-radius:10px">
+              <div style="font-family:'Quicksand',sans-serif;font-size:1.6rem;font-weight:700;color:#92600a" id="stat-votes">—</div>
+              <div style="font-size:.72rem;color:var(--text-muted);text-transform:uppercase;letter-spacing:.5px">Votes</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</main>
+
+<button id="scroll-top" onclick="window.scrollTo({top:0,behavior:'smooth'})">↑</button>
+
+<script>
+// ============================================================
+// CONFIGURATION SUPABASE — REMPLACE CES DEUX VALEURS !
+// ============================================================
+const SUPABASE_URL = 'https://talwvhjwwktbfefoqlyt.supabase.co';
+const SUPABASE_ANON_KEY = 'sb_publishable_-b0x2Ekx7ySSoCvEnxv2wg_IBwKsWgY';
+// ============================================================
+
+const { createClient } = supabase;
+const db = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+let currentUser = null;
+let currentFilter = 'all';
+let userVotes = new Set();
+
+// ==================== AUTH ====================
+
+async function initAuth() {
+  const { data: { session } } = await db.auth.getSession();
+  if (session) setUser(session.user);
+  db.auth.onAuthStateChange((_event, session) => {
+    if (session) setUser(session.user);
+    else clearUser();
+  });
+}
+
+function setUser(user) {
+  currentUser = user;
+  const username = user.user_metadata?.username || user.email.split('@')[0];
+  document.getElementById('auth-area').innerHTML = `
+    <div class="header-avatar-wrap">
+      <div class="avatar" onclick="toggleUserMenu()" title="${username}">${username[0].toUpperCase()}</div>
+      <div class="user-menu hidden" id="user-menu">
+        <div class="user-email">Connecté en tant que</div>
+        <div class="user-menu-item" style="font-weight:700;color:var(--green-deep)">${username}</div>
+        <div class="user-menu-sep"></div>
+        <div class="user-menu-item danger" onclick="handleLogout()">🚪 Se déconnecter</div>
+      </div>
+    </div>`;
+  document.getElementById('add-tip-login-prompt').style.display = 'none';
+  document.getElementById('add-tip-form').style.display = 'block';
+  loadUserVotes();
+}
+
+function clearUser() {
+  currentUser = null;
+  document.getElementById('auth-area').innerHTML = `<button class="auth-btn" onclick="openAuthModal()">🎮 Connexion</button>`;
+  document.getElementById('add-tip-login-prompt').style.display = 'block';
+  document.getElementById('add-tip-form').style.display = 'none';
+  userVotes.clear();
+}
+
+function toggleUserMenu() {
+  document.getElementById('user-menu')?.classList.toggle('hidden');
+}
+
+document.addEventListener('click', (e) => {
+  const menu = document.getElementById('user-menu');
+  if (menu && !menu.closest('.header-avatar-wrap')?.contains(e.target)) {
+    menu.classList.add('hidden');
+  }
+});
+
+async function handleLogin() {
+  const email = document.getElementById('login-email').value.trim();
+  const password = document.getElementById('login-password').value;
+  const errorEl = document.getElementById('login-error');
+  errorEl.classList.remove('show');
+  if (!email || !password) { errorEl.textContent = 'Remplis tous les champs.'; errorEl.classList.add('show'); return; }
+  const { error } = await db.auth.signInWithPassword({ email, password });
+  if (error) { errorEl.textContent = error.message === 'Invalid login credentials' ? 'Email ou mot de passe incorrect.' : error.message; errorEl.classList.add('show'); }
+  else { closeAuthModal(); showToast('Connecté ! Bienvenue 🌿'); }
+}
+
+async function handleRegister() {
+  const username = document.getElementById('register-username').value.trim();
+  const email = document.getElementById('register-email').value.trim();
+  const password = document.getElementById('register-password').value;
+  const errorEl = document.getElementById('register-error');
+  const successEl = document.getElementById('register-success');
+  errorEl.classList.remove('show'); successEl.classList.remove('show');
+  if (!username || !email || !password) { errorEl.textContent = 'Remplis tous les champs.'; errorEl.classList.add('show'); return; }
+  if (password.length < 8) { errorEl.textContent = 'Mot de passe trop court (8 caractères min).'; errorEl.classList.add('show'); return; }
+  const { error } = await db.auth.signUp({ email, password, options: { data: { username } } });
+  if (error) { errorEl.textContent = error.message; errorEl.classList.add('show'); }
+  else { successEl.textContent = '✅ Compte créé ! Vérifie tes emails pour confirmer, puis connecte-toi.'; successEl.classList.add('show'); }
+}
+
+async function handleLogout() {
+  await db.auth.signOut();
+  showToast('Déconnecté 👋');
+}
+
+function openAuthModal() { document.getElementById('auth-modal').classList.remove('hidden'); }
+function closeAuthModal() { document.getElementById('auth-modal').classList.add('hidden'); }
+function switchAuthTab(tab) {
+  document.querySelectorAll('.modal-tab').forEach((t,i) => t.classList.toggle('active', (i===0&&tab==='login')||(i===1&&tab==='register')));
+  document.getElementById('auth-login').classList.toggle('active', tab==='login');
+  document.getElementById('auth-register').classList.toggle('active', tab==='register');
+}
+
+// ==================== TIPS ====================
+
+async function loadTips(filter, btn) {
+  if(btn){ document.querySelectorAll('#section-communaute .filter-btn').forEach(b=>b.classList.remove('active')); btn.classList.add('active'); }
+  currentFilter = filter;
+  document.getElementById('tips-feed').innerHTML = '<div class="loading-state"><div class="loading-spinner"></div>Chargement…</div>';
+  let query = db.from('tips').select('*, profiles(username)').order('votes', { ascending: false });
+  if (filter !== 'all') query = query.eq('category', filter);
+  const { data, error } = await query;
+  if (error) { document.getElementById('tips-feed').innerHTML = '<div class="empty-state"><div class="empty-icon">⚠️</div><div class="empty-title">Erreur de chargement</div><p>Vérifie la configuration Supabase.</p></div>'; return; }
+  if (!data || data.length === 0) {
+    document.getElementById('tips-feed').innerHTML = '<div class="empty-state"><div class="empty-icon">🌱</div><div class="empty-title">Aucune astuce pour le moment</div><p>Sois le premier à partager une astuce !</p></div>';
+    return;
+  }
+  document.getElementById('tips-feed').innerHTML = data.map(tip => renderTipCard(tip)).join('');
+  updateStats();
+}
+
+function renderTipCard(tip) {
+  const username = tip.profiles?.username || 'Dresseur';
+  const initial = username[0].toUpperCase();
+  const date = new Date(tip.created_at).toLocaleDateString('fr-FR', { day:'numeric', month:'short', year:'numeric' });
+  const voted = userVotes.has(tip.id);
+  const catColors = { 'Exploration':'tag-blue', 'Construction':'tag-orange', 'Ressources':'tag-yellow', 'Habitats':'tag-green', 'Pokémon':'tag-purple' };
+  const catEmojis = { 'Exploration':'🗺️', 'Construction':'🏗️', 'Ressources':'⛏️', 'Habitats':'🏡', 'Pokémon':'✨' };
+  return `
+    <div class="community-tip-card" id="tip-${tip.id}">
+      <div class="tip-card-header">
+        <div class="tip-card-meta">
+          <div class="tip-avatar">${initial}</div>
+          <div><div class="tip-author">${escapeHtml(username)}</div><div class="tip-date">${date}</div></div>
+        </div>
+        <span class="tag ${catColors[tip.category]||'tag-green'}">${catEmojis[tip.category]||'💡'} ${tip.category}</span>
+      </div>
+      ${tip.title ? `<div style="font-family:'Quicksand',sans-serif;font-weight:700;font-size:1rem;color:var(--green-deep);margin-bottom:7px">${escapeHtml(tip.title)}</div>` : ''}
+      <div class="tip-text">${escapeHtml(tip.content)}</div>
+      <div class="tip-actions">
+        <button class="vote-btn ${voted?'voted':''}" onclick="toggleVote('${tip.id}',this)" ${voted?'disabled':''}>
+          👍 <span id="votes-${tip.id}">${tip.votes||0}</span>
+        </button>
+        <button class="comment-toggle-btn" onclick="toggleComments('${tip.id}')">
+          💬 <span id="comment-count-${tip.id}">0</span> commentaires
+        </button>
+      </div>
+      <div class="comments-section" id="comments-${tip.id}">
+        <div id="comments-list-${tip.id}"><div class="loading-state" style="padding:16px 0"><div class="loading-spinner" style="width:24px;height:24px;margin:0 auto 6px"></div></div></div>
+        ${currentUser ? `
+        <div class="comment-input-row">
+          <input type="text" class="comment-input" id="comment-input-${tip.id}" placeholder="Ajouter un commentaire…" maxlength="300" onkeydown="if(event.key==='Enter')submitComment('${tip.id}')">
+          <button class="comment-submit" onclick="submitComment('${tip.id}')">Envoyer</button>
+        </div>` : `<p style="font-size:.8rem;color:var(--text-muted);margin-top:10px;text-align:center"><a href="#" onclick="openAuthModal()" style="color:var(--green-mid)">Connecte-toi</a> pour commenter</p>`}
+      </div>
+    </div>`;
+}
+
+async function toggleComments(tipId) {
+  const section = document.getElementById(`comments-${tipId}`);
+  section.classList.toggle('open');
+  if (section.classList.contains('open')) loadComments(tipId);
+}
+
+async function loadComments(tipId) {
+  const { data } = await db.from('comments').select('*, profiles(username)').eq('tip_id', tipId).order('created_at', { ascending: true });
+  const listEl = document.getElementById(`comments-list-${tipId}`);
+  document.getElementById(`comment-count-${tipId}`).textContent = data?.length || 0;
+  if (!data || data.length === 0) { listEl.innerHTML = '<p style="font-size:.8rem;color:var(--text-muted);text-align:center;padding:8px 0">Aucun commentaire — sois le premier !</p>'; return; }
+  listEl.innerHTML = data.map(c => {
+    const u = c.profiles?.username || 'Dresseur';
+    return `<div class="comment-item"><div class="comment-avatar">${u[0].toUpperCase()}</div><div class="comment-bubble"><div class="comment-author">${escapeHtml(u)}</div><div class="comment-text">${escapeHtml(c.content)}</div></div></div>`;
+  }).join('');
+}
+
+async function submitComment(tipId) {
+  if (!currentUser) { openAuthModal(); return; }
+  const input = document.getElementById(`comment-input-${tipId}`);
+  const content = input.value.trim();
+  if (!content) return;
+  const { error } = await db.from('comments').insert({ tip_id: tipId, user_id: currentUser.id, content });
+  if (!error) { input.value = ''; loadComments(tipId); showToast('Commentaire ajouté ! 💬'); }
+}
+
+async function toggleVote(tipId, btn) {
+  if (!currentUser) { openAuthModal(); return; }
+  if (userVotes.has(tipId)) return;
+  const { error } = await db.rpc('increment_votes', { tip_id: tipId, user_id: currentUser.id });
+  if (!error) {
+    userVotes.add(tipId);
+    btn.classList.add('voted'); btn.disabled = true;
+    const countEl = document.getElementById(`votes-${tipId}`);
+    countEl.textContent = parseInt(countEl.textContent) + 1;
+    showToast('Vote enregistré ! 👍');
+  }
+}
+
+async function loadUserVotes() {
+  if (!currentUser) return;
+  const { data } = await db.from('votes').select('tip_id').eq('user_id', currentUser.id);
+  if (data) data.forEach(v => userVotes.add(v.tip_id));
+}
+
+async function submitTip() {
+  if (!currentUser) { openAuthModal(); return; }
+  const title = document.getElementById('tip-title').value.trim();
+  const content = document.getElementById('tip-text').value.trim();
+  const category = document.getElementById('tip-category').value;
+  if (!content) { showToast('Écris quelque chose ! ✏️'); return; }
+  const btn = document.getElementById('submit-tip-btn');
+  btn.disabled = true; btn.textContent = 'Envoi…';
+  const { error } = await db.from('tips').insert({ user_id: currentUser.id, title, content, category, votes: 0 });
+  btn.disabled = false; btn.textContent = '🌿 Partager l\'astuce';
+  if (!error) {
+    document.getElementById('tip-title').value = '';
+    document.getElementById('tip-text').value = '';
+    loadTips(currentFilter, null);
+    showToast('Astuce partagée ! Merci 🌿');
+  } else { showToast('Erreur lors de l\'envoi. Réessaie.'); }
+}
+
+async function updateStats() {
+  const { count: tipCount } = await db.from('tips').select('*', { count: 'exact', head: true });
+  const { data: votesData } = await db.from('tips').select('votes');
+  const totalVotes = votesData?.reduce((acc, t) => acc + (t.votes || 0), 0) || 0;
+  document.getElementById('stat-tips').textContent = tipCount || 0;
+  document.getElementById('stat-votes').textContent = totalVotes;
+}
+
+// ==================== UI UTILS ====================
+
+function showTab(name, btn) {
+  document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+  document.getElementById('section-' + name).classList.add('active');
+  document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
+  if (btn) btn.classList.add('active');
+  else document.querySelector(`[data-tab="${name}"]`)?.classList.add('active');
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+  if (name === 'communaute') loadTips(currentFilter, null);
+}
+
+function toggleAccordion(header) { header.parentElement.classList.toggle('open'); }
+
+function filterPokemon(cat, btn) {
+  document.querySelectorAll('#section-pokemon-speciaux .filter-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  document.querySelectorAll('.pokemon-card').forEach(c => { c.style.display = (cat === 'all' || c.dataset.category === cat) ? 'block' : 'none'; });
+}
+
+function escapeHtml(str) {
+  if (!str) return '';
+  return str.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg; t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 3000);
+}
+
+// SEARCH
+const searchData = [
+  {title:"Régions",cat:"🗺️ Régions",tab:"regions",kw:["région","zone","terrassec","collinangle","grisemer","flotiles"]},
+  {title:"Terrassec",cat:"🗺️ Régions",tab:"regions",kw:["terrassec","début","carapuce","bulbizarre"]},
+  {title:"Grisemer",cat:"🗺️ Régions",tab:"regions",kw:["grisemer","électricité","générateur","motisma"]},
+  {title:"Flotiles-Millefeux",cat:"🗺️ Régions",tab:"regions",kw:["flotiles","millefeux","cristal","finale"]},
+  {title:"Capacités",cat:"⚡ Capacités",tab:"capacites",kw:["capacité","pistolet","éclate","vol","magnétik"]},
+  {title:"Pistolet à O",cat:"⚡ Capacités",tab:"capacites",kw:["pistolet","eau","carapuce","arroser"]},
+  {title:"Vol Magnétik",cat:"⚡ Capacités",tab:"capacites",kw:["vol magnétik","magnéti","ultime","endgame"]},
+  {title:"Habitadex",cat:"🏡 Habitats",tab:"habitats",kw:["habitat","habitadex","construire","herbe","peluche"]},
+  {title:"Ressources & Craft",cat:"⛏️ Ressources",tab:"ressources",kw:["ressource","craft","brique","béton","lingot"]},
+  {title:"Défi d'Initiation",cat:"⛏️ Ressources",tab:"ressources",kw:["défi","initiation","crédits","fin","forgeliroue"]},
+  {title:"Spécialités de transformation",cat:"⛏️ Ressources",tab:"ressources",kw:["combustion","broyage","recyclage","transformation"]},
+  {title:"Pokémon Spéciaux",cat:"✨ Pokémon",tab:"pokemon-speciaux",kw:["pokémon","forme","légendaire","pikapâle","ronflex","forgelina"]},
+  {title:"Légendaires",cat:"✨ Pokémon",tab:"pokemon-speciaux",kw:["légendaire","kyogre","mewtwo","ho-oh"]},
+  {title:"Forgelina",cat:"✨ Pokémon",tab:"pokemon-speciaux",kw:["forgelina","construction","chantier","béton"]},
+  {title:"Routine Quotidienne",cat:"📅 Quotidien",tab:"quotidien",kw:["quotidien","routine","boutique","défis","pokéflouz"]},
+  {title:"Communauté — Astuces joueurs",cat:"💬 Communauté",tab:"communaute",kw:["communauté","astuce","partager","vote","commentaire"]},
+];
+
+const searchInput = document.getElementById('search-input');
+const searchResultsEl = document.getElementById('search-results');
+const overlayEl = document.getElementById('overlay');
+
+searchInput.addEventListener('input', function() {
+  const q = this.value.trim().toLowerCase();
+  if (q.length < 2) { searchResultsEl.classList.remove('visible'); overlayEl.classList.remove('visible'); return; }
+  const matches = searchData.filter(d => d.title.toLowerCase().includes(q) || d.kw.some(k => k.includes(q))).slice(0, 7);
+  searchResultsEl.innerHTML = matches.length === 0
+    ? `<div style="padding:14px;text-align:center;color:var(--text-muted);font-size:.875rem">Aucun résultat pour "${q}"</div>`
+    : matches.map(m => `<div class="search-result-item" onclick="goToResult('${m.tab}')"><div class="search-result-title">${m.title}</div><div class="search-result-cat">${m.cat}</div></div>`).join('');
+  searchResultsEl.classList.add('visible'); overlayEl.classList.add('visible');
+});
+
+function goToResult(tab) {
+  searchInput.value = ''; searchResultsEl.classList.remove('visible'); overlayEl.classList.remove('visible');
+  showTab(tab, document.querySelector(`[data-tab="${tab}"]`));
+}
+overlayEl.addEventListener('click', () => { searchResultsEl.classList.remove('visible'); overlayEl.classList.remove('visible'); searchInput.value = ''; });
+
+window.addEventListener('scroll', () => { document.getElementById('scroll-top').classList.toggle('visible', window.scrollY > 300); });
+
+// INIT
+initAuth();
+// Load stats on page load
+updateStats();
+</script>
+</body>
+</html>
