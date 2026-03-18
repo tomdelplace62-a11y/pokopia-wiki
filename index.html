@@ -8,51 +8,51 @@
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <style>
   :root {
-    --green-deep: #2d5a27;
-    --green-mid: #4a8c3f;
-    --green-light: #7bc67a;
-    --green-pale: #c8e6c5;
-    --green-ultra: #e8f5e7;
+    --green-deep: #1e4d1a;
+    --green-mid: #3d7a34;
+    --green-light: #6ab86a;
+    --green-pale: #bfdfbc;
+    --green-ultra: #e6f5e4;
     --sky: #87ceeb;
     --sky-light: #e0f4ff;
     --earth: #8b5e3c;
     --gold: #f5c842;
-    --gold-light: #fff3c0;
+    --gold-light: #fff8dc;
     --red: #e74c3c;
     --blue: #3498db;
     --purple: #9b59b6;
     --orange: #e67e22;
     --teal: #1abc9c;
-    --bg: #f0f8ed;
+    --bg: #eef7eb;
     --card: #ffffff;
-    --text: #2c3e2d;
-    --text-muted: #6b8f6b;
-    --border: #c8dfc5;
-    --shadow: 0 4px 20px rgba(45,90,39,0.1);
-    --shadow-hover: 0 8px 30px rgba(45,90,39,0.18);
+    --text: #1e3320;
+    --text-muted: #5a7d5a;
+    --border: #bdd9b9;
+    --shadow: 0 4px 24px rgba(30,77,26,0.10);
+    --shadow-hover: 0 10px 36px rgba(30,77,26,0.18);
   }
   *{box-sizing:border-box;margin:0;padding:0;}
   body{font-family:'Nunito',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;overflow-x:hidden;}
   body::before{content:'';position:fixed;inset:0;background-image:radial-gradient(circle at 20% 20%,rgba(123,198,122,.08) 0%,transparent 50%),radial-gradient(circle at 80% 80%,rgba(135,206,235,.08) 0%,transparent 50%);pointer-events:none;z-index:0;}
 
   /* HEADER */
-  header{background:linear-gradient(135deg,var(--green-deep) 0%,var(--green-mid) 50%,#3d7a55 100%);position:sticky;top:0;z-index:100;box-shadow:0 4px 20px rgba(0,0,0,.2);}
-  .header-inner{max-width:1200px;margin:0 auto;padding:12px 24px;display:flex;align-items:center;gap:14px;}
-  .logo{font-family:'Quicksand',sans-serif;font-weight:700;font-size:1.5rem;color:white;display:flex;align-items:center;gap:10px;text-shadow:0 2px 8px rgba(0,0,0,.3);}
-  .logo-icon{width:34px;height:34px;background:var(--gold);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:1.1rem;box-shadow:0 2px 8px rgba(0,0,0,.2);animation:pulse 3s ease-in-out infinite;}
-  @keyframes pulse{0%,100%{transform:scale(1);}50%{transform:scale(1.06);}}
-  .logo-sub{font-size:.58rem;font-weight:400;color:rgba(255,255,255,.7);display:block;letter-spacing:2px;text-transform:uppercase;}
+  header{background:linear-gradient(135deg,#1a3d15 0%,#2d6124 40%,#1e6b3a 100%);position:sticky;top:0;z-index:100;box-shadow:0 4px 24px rgba(0,0,0,.25);}
+  .header-inner{max-width:1200px;margin:0 auto;padding:13px 24px;display:flex;align-items:center;gap:14px;}
+  .logo{font-family:'Quicksand',sans-serif;font-weight:700;font-size:1.55rem;color:white;display:flex;align-items:center;gap:12px;text-shadow:0 2px 10px rgba(0,0,0,.35);}
+  .logo-icon{width:38px;height:38px;background:linear-gradient(135deg,var(--gold),#f0a500);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:1.2rem;box-shadow:0 3px 12px rgba(245,200,66,.5);animation:pulse 3s ease-in-out infinite;}
+  @keyframes pulse{0%,100%{transform:scale(1);}50%{transform:scale(1.08);}}
+  .logo-sub{font-size:.56rem;font-weight:600;color:rgba(255,255,255,.65);display:block;letter-spacing:2.5px;text-transform:uppercase;}
   .header-right{margin-left:auto;display:flex;align-items:center;gap:10px;}
   .search-wrap{position:relative;}
-  .search-input{width:260px;padding:9px 40px 9px 14px;border:2px solid rgba(255,255,255,.2);border-radius:50px;background:rgba(255,255,255,.15);color:white;font-family:'Nunito',sans-serif;font-size:.875rem;outline:none;transition:all .3s;backdrop-filter:blur(8px);}
-  .search-input::placeholder{color:rgba(255,255,255,.6);}
-  .search-input:focus{background:rgba(255,255,255,.25);border-color:rgba(255,255,255,.5);}
-  .search-icon{position:absolute;right:13px;top:50%;transform:translateY(-50%);color:rgba(255,255,255,.7);pointer-events:none;}
+  .search-input{width:260px;padding:9px 40px 9px 16px;border:2px solid rgba(255,255,255,.18);border-radius:50px;background:rgba(255,255,255,.12);color:white;font-family:'Nunito',sans-serif;font-size:.875rem;outline:none;transition:all .3s;backdrop-filter:blur(10px);}
+  .search-input::placeholder{color:rgba(255,255,255,.55);}
+  .search-input:focus{background:rgba(255,255,255,.22);border-color:rgba(245,200,66,.6);box-shadow:0 0 0 3px rgba(245,200,66,.15);}
+  .search-icon{position:absolute;right:14px;top:50%;transform:translateY(-50%);color:rgba(255,255,255,.65);pointer-events:none;}
 
   /* AUTH BUTTON */
-  .auth-btn{padding:8px 18px;border-radius:50px;border:2px solid rgba(255,255,255,.4);background:rgba(255,255,255,.15);color:white;font-family:'Nunito',sans-serif;font-size:.85rem;font-weight:700;cursor:pointer;transition:all .25s;white-space:nowrap;display:flex;align-items:center;gap:6px;}
-  .auth-btn:hover{background:rgba(255,255,255,.3);border-color:rgba(255,255,255,.7);}
-  .avatar{width:30px;height:30px;border-radius:50%;background:var(--gold);display:flex;align-items:center;justify-content:center;font-size:.85rem;font-weight:700;color:var(--green-deep);cursor:pointer;border:2px solid rgba(255,255,255,.4);}
+  .auth-btn{padding:8px 20px;border-radius:50px;border:2px solid rgba(255,255,255,.35);background:rgba(255,255,255,.12);color:white;font-family:'Nunito',sans-serif;font-size:.85rem;font-weight:700;cursor:pointer;transition:all .25s;white-space:nowrap;display:flex;align-items:center;gap:6px;}
+  .auth-btn:hover{background:rgba(245,200,66,.25);border-color:rgba(245,200,66,.6);transform:translateY(-1px);}
+  .avatar{width:32px;height:32px;border-radius:50%;background:linear-gradient(135deg,var(--gold),#f0a500);display:flex;align-items:center;justify-content:center;font-size:.85rem;font-weight:800;color:var(--green-deep);cursor:pointer;border:2px solid rgba(255,255,255,.5);box-shadow:0 2px 8px rgba(245,200,66,.4);}
 
   /* NAV */
   nav{background:rgba(255,255,255,.97);border-bottom:2px solid var(--border);position:sticky;top:59px;z-index:99;box-shadow:0 2px 10px rgba(0,0,0,.06);}
@@ -77,10 +77,46 @@
   /* CARDS */
   .cards-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(270px,1fr));gap:14px;}
   .cards-grid-2{display:grid;grid-template-columns:repeat(auto-fill,minmax(340px,1fr));gap:14px;}
-  .card{background:var(--card);border:2px solid var(--border);border-radius:14px;padding:18px;transition:all .25s;position:relative;overflow:hidden;}
-  .card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,var(--green-light),var(--green-mid));opacity:0;transition:opacity .25s;}
-  .card:hover{box-shadow:var(--shadow-hover);transform:translateY(-2px);border-color:var(--green-light);}
+  .card{background:var(--card);border:2px solid var(--border);border-radius:16px;padding:18px;transition:all .28s cubic-bezier(.34,1.56,.64,1);position:relative;overflow:hidden;}
+  .card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,var(--green-light),var(--gold),var(--green-mid));opacity:0;transition:opacity .25s;}
+  .card:hover{box-shadow:var(--shadow-hover);transform:translateY(-4px);border-color:var(--green-light);}
   .card:hover::before{opacity:1;}
+
+  /* PHOTO FORUM */
+  .forum-tabs{display:flex;gap:8px;margin-bottom:18px;background:var(--green-ultra);padding:5px;border-radius:12px;}
+  .forum-tab{flex:1;padding:9px 14px;border-radius:8px;border:none;background:none;font-family:'Nunito',sans-serif;font-size:.85rem;font-weight:700;cursor:pointer;color:var(--text-muted);transition:all .2s;text-align:center;}
+  .forum-tab.active{background:white;color:var(--green-deep);box-shadow:0 2px 8px rgba(0,0,0,.08);}
+  .forum-panel{display:none;}
+  .forum-panel.active{display:block;}
+  .photo-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:14px;margin-top:4px;}
+  .photo-post{background:white;border:2px solid var(--border);border-radius:14px;overflow:hidden;transition:all .25s;}
+  .photo-post:hover{transform:translateY(-3px);box-shadow:var(--shadow-hover);border-color:var(--green-light);}
+  .photo-post-img{width:100%;height:200px;object-fit:cover;background:var(--green-ultra);display:flex;align-items:center;justify-content:center;font-size:3rem;cursor:pointer;}
+  .photo-post-img img{width:100%;height:100%;object-fit:cover;}
+  .photo-post-body{padding:12px 14px;}
+  .photo-post-author{display:flex;align-items:center;gap:8px;margin-bottom:8px;}
+  .photo-post-avatar{width:28px;height:28px;border-radius:50%;background:var(--green-mid);color:white;display:flex;align-items:center;justify-content:center;font-size:.75rem;font-weight:700;flex-shrink:0;}
+  .photo-post-username{font-weight:700;font-size:.82rem;color:var(--green-deep);}
+  .photo-post-caption{font-size:.84rem;color:var(--text);line-height:1.5;margin-bottom:8px;}
+  .photo-post-actions{display:flex;align-items:center;gap:8px;}
+  .photo-type-badge{display:inline-flex;align-items:center;gap:4px;padding:3px 9px;border-radius:50px;font-size:.7rem;font-weight:700;margin-bottom:6px;}
+  .badge-flex{background:#fde8e8;color:#9b1c1c;}
+  .badge-probleme{background:#dbeafe;color:#1e40af;}
+  .badge-habitat{background:var(--green-pale);color:var(--green-deep);}
+  .badge-autre{background:#ede9fe;color:#5b21b6;}
+
+  /* UPLOAD AREA */
+  .upload-area{border:2px dashed var(--border);border-radius:12px;padding:28px;text-align:center;cursor:pointer;transition:all .2s;background:var(--green-ultra);}
+  .upload-area:hover,.upload-area.drag{border-color:var(--green-mid);background:var(--green-pale);}
+  .upload-area input{display:none;}
+  .upload-preview{width:100%;max-height:200px;object-fit:cover;border-radius:10px;margin-top:10px;display:none;}
+
+  /* IMAGE LIGHTBOX */
+  .lightbox{position:fixed;inset:0;background:rgba(0,0,0,.88);z-index:600;display:flex;align-items:center;justify-content:center;padding:20px;cursor:zoom-out;}
+  .lightbox.hidden{display:none;}
+  .lightbox img{max-width:90vw;max-height:88vh;object-fit:contain;border-radius:12px;box-shadow:0 20px 60px rgba(0,0,0,.5);}
+  .lightbox-close{position:absolute;top:18px;right:18px;width:36px;height:36px;border-radius:50%;background:rgba(255,255,255,.15);border:2px solid rgba(255,255,255,.3);color:white;font-size:1.1rem;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .2s;}
+  .lightbox-close:hover{background:rgba(255,255,255,.3);}
   .card-title{font-family:'Quicksand',sans-serif;font-weight:700;font-size:1rem;color:var(--green-deep);margin-bottom:8px;display:flex;align-items:center;gap:7px;}
   .card-content{font-size:.875rem;color:var(--text);line-height:1.6;}
 
@@ -135,6 +171,8 @@
   .pokemon-card:hover{transform:translateY(-4px);box-shadow:var(--shadow-hover);border-color:var(--green-light);}
   .pokemon-num{font-size:.7rem;color:var(--text-muted);font-weight:700;text-transform:uppercase;letter-spacing:1px;margin-bottom:4px;}
   .pokemon-emoji{font-size:2rem;margin:4px 0 6px;display:block;}
+  .pokemon-img{width:80px;height:80px;object-fit:contain;margin:4px auto 6px;display:block;filter:drop-shadow(0 4px 8px rgba(0,0,0,.12));transition:transform .3s;}
+  .pokemon-card:hover .pokemon-img{transform:scale(1.1) translateY(-3px);}
   .pokemon-name{font-family:'Quicksand',sans-serif;font-weight:700;font-size:.9rem;color:var(--green-deep);margin-bottom:5px;}
   .pokemon-info{font-size:.76rem;color:var(--text-muted);line-height:1.5;}
 
@@ -336,6 +374,7 @@
     <button class="nav-tab" data-tab="habitats" onclick="showTab('habitats',this)">🏡 Habitats</button>
     <button class="nav-tab" data-tab="ressources" onclick="showTab('ressources',this)">⛏️ Ressources</button>
     <button class="nav-tab" data-tab="pokemon-speciaux" onclick="showTab('pokemon-speciaux',this)">✨ Pokémon</button>
+    <button class="nav-tab" data-tab="evenements" onclick="showTab('evenements',this)">🎉 Événements</button>
     <button class="nav-tab" data-tab="quotidien" onclick="showTab('quotidien',this)">📅 Quotidien</button>
     <button class="nav-tab" data-tab="communaute" onclick="showTab('communaute',this)">💬 Communauté</button>
   </div>
@@ -552,22 +591,89 @@
       <button class="filter-btn" onclick="filterPokemon('utilitaire',this)">🔧 Utilitaires</button>
     </div>
     <div class="pokemon-list" id="pokemon-grid">
-      <div class="pokemon-card" data-category="forme"><div class="pokemon-num">Forme Spéciale</div><span class="pokemon-emoji">⚡</span><div class="pokemon-name">Pikapâle</div><div class="pokemon-info">Pikachu décoloré aux oreilles tombantes</div><div style="margin-top:6px"><span class="tag tag-purple">Forme inédite</span></div></div>
-      <div class="pokemon-card" data-category="forme"><div class="pokemon-num">Forme Spéciale</div><span class="pokemon-emoji">🌿</span><div class="pokemon-name">Ronflex Moussu</div><div class="pokemon-info">Ronflex recouvert de mousse avec une fleur sur la tête</div><div style="margin-top:6px"><span class="tag tag-purple">Forme inédite</span></div></div>
-      <div class="pokemon-card" data-category="forme"><div class="pokemon-num">Forme Spéciale</div><span class="pokemon-emoji">🎵</span><div class="pokemon-name">DJ Motisma</div><div class="pokemon-info">Motisma dans une minichaîne hi-fi — Zone : Grisemer</div><div style="margin-top:6px"><span class="tag tag-blue">Grisemer</span></div></div>
-      <div class="pokemon-card" data-category="forme"><div class="pokemon-num">PNJ Spécial</div><span class="pokemon-emoji">👓</span><div class="pokemon-name">Prof. Bouldeneu</div><div class="pokemon-info">Guide du joueur tout au long de l'aventure</div><div style="margin-top:6px"><span class="tag tag-teal">PNJ essentiel</span></div></div>
-      <div class="pokemon-card" data-category="legendaire"><div class="pokemon-num">Légendaire</div><span class="pokemon-emoji">🌊</span><div class="pokemon-name">Kyogre</div><div class="pokemon-info">Légendaire de l'eau. Habitat spécifique requis.</div><div style="margin-top:6px"><span class="tag tag-red">⭐ Légendaire</span></div></div>
-      <div class="pokemon-card" data-category="legendaire"><div class="pokemon-num">Légendaire</div><span class="pokemon-emoji">🧬</span><div class="pokemon-name">Mewtwo</div><div class="pokemon-info">Légendaire psychique. Grandes constructions requises.</div><div style="margin-top:6px"><span class="tag tag-red">⭐ Légendaire</span></div></div>
-      <div class="pokemon-card" data-category="legendaire"><div class="pokemon-num">Légendaire</div><span class="pokemon-emoji">🌅</span><div class="pokemon-name">Ho-Oh</div><div class="pokemon-info">Légendaire feu/vol. Énormes constructions en fin de partie.</div><div style="margin-top:6px"><span class="tag tag-red">⭐ Légendaire</span></div></div>
-      <div class="pokemon-card" data-category="utilitaire" style="border-color:#f5c842"><div class="pokemon-num">Top Utilitaire</div><span class="pokemon-emoji">⚙️</span><div class="pokemon-name">Forgelina</div><div class="pokemon-info">Accélère les chantiers. Béton → Forgeliroues. Indispensable pour le Défi d'Initiation.</div><div style="margin-top:6px"><span class="tag tag-yellow">Top tier</span></div></div>
-      <div class="pokemon-card" data-category="utilitaire"><div class="pokemon-num">Endgame</div><span class="pokemon-emoji">🧲</span><div class="pokemon-name">Magnéti</div><div class="pokemon-info">Débloque Vol Magnétik, la capacité ultime.</div><div style="margin-top:6px"><span class="tag tag-yellow">Vol Magnétik</span></div></div>
-      <div class="pokemon-card" data-category="utilitaire"><div class="pokemon-num">Utilitaire</div><span class="pokemon-emoji">💻</span><div class="pokemon-name">Porygon</div><div class="pokemon-info">Recyclage : déchets papier → piles de papier.</div><div style="margin-top:6px"><span class="tag tag-teal">♻️ Recyclage</span></div></div>
-      <div class="pokemon-card" data-category="utilitaire"><div class="pokemon-num">Utilitaire</div><span class="pokemon-emoji">🐝</span><div class="pokemon-name">Apireine</div><div class="pokemon-info">Bois → meubles automatiquement.</div><div style="margin-top:6px"><span class="tag tag-yellow">🪑 Meubles</span></div></div>
-      <div class="pokemon-card" data-category="utilitaire"><div class="pokemon-num">Utilitaire</div><span class="pokemon-emoji">🐑</span><div class="pokemon-name">Wattouat</div><div class="pokemon-info">Coton naturel ×5 via désordre. Requis Défi d'Initiation.</div><div style="margin-top:6px"><span class="tag tag-green">🐑 Coton</span></div></div>
+      <!-- Formes inédites -->
+      <div class="pokemon-card" data-category="forme"><div class="pokemon-num">Forme Spéciale</div><img class="pokemon-img" src="https://www.fuperfaufette.com/img/pokemon/artworks/025-250x250.png" onerror="this.style.display='none'" alt="Pikapâle"><div class="pokemon-name">Pikapâle</div><div class="pokemon-info">Pikachu décoloré aux oreilles tombantes</div><div style="margin-top:6px"><span class="tag tag-purple">Forme inédite</span></div></div>
+      <div class="pokemon-card" data-category="forme"><div class="pokemon-num">Forme Spéciale</div><img class="pokemon-img" src="https://www.fuperfaufette.com/img/pokemon/artworks/143-250x250.png" onerror="this.style.display='none'" alt="Ronflex Moussu"><div class="pokemon-name">Ronflex Moussu</div><div class="pokemon-info">Ronflex recouvert de mousse avec une fleur sur la tête</div><div style="margin-top:6px"><span class="tag tag-purple">Forme inédite</span></div></div>
+      <div class="pokemon-card" data-category="forme"><div class="pokemon-num">Forme Spéciale</div><img class="pokemon-img" src="https://www.fuperfaufette.com/img/pokemon/artworks/479-250x250.png" onerror="this.style.display='none'" alt="DJ Motisma"><div class="pokemon-name">DJ Motisma</div><div class="pokemon-info">Motisma dans une minichaîne hi-fi — Zone : Grisemer</div><div style="margin-top:6px"><span class="tag tag-blue">Grisemer</span></div></div>
+      <div class="pokemon-card" data-category="forme"><div class="pokemon-num">PNJ Spécial</div><img class="pokemon-img" src="https://www.fuperfaufette.com/img/pokemon/artworks/069-250x250.png" onerror="this.style.display='none'" alt="Prof. Bouldeneu"><div class="pokemon-name">Prof. Bouldeneu</div><div class="pokemon-info">Guide du joueur tout au long de l'aventure</div><div style="margin-top:6px"><span class="tag tag-teal">PNJ essentiel</span></div></div>
+      <div class="pokemon-card" data-category="forme"><div class="pokemon-num">Forme Spéciale</div><img class="pokemon-img" src="https://www.fuperfaufette.com/img/pokemon/artworks/352-250x250.png" onerror="this.style.display='none'" alt="Maître Queulorior"><div class="pokemon-name">Maître Queulorior</div><div class="pokemon-info">Queulorior artiste utilisant sa queue comme pinceau</div><div style="margin-top:6px"><span class="tag tag-purple">Forme inédite</span></div></div>
+      <!-- Légendaires -->
+      <div class="pokemon-card" data-category="legendaire"><div class="pokemon-num">Légendaire</div><img class="pokemon-img" src="https://www.fuperfaufette.com/img/pokemon/artworks/382-250x250.png" onerror="this.style.display='none'" alt="Kyogre"><div class="pokemon-name">Kyogre</div><div class="pokemon-info">Légendaire de l'eau. Habitat spécifique requis.</div><div style="margin-top:6px"><span class="tag tag-red">⭐ Légendaire</span><span class="tag tag-blue">Eau</span></div></div>
+      <div class="pokemon-card" data-category="legendaire"><div class="pokemon-num">Légendaire</div><img class="pokemon-img" src="https://www.fuperfaufette.com/img/pokemon/artworks/150-250x250.png" onerror="this.style.display='none'" alt="Mewtwo"><div class="pokemon-name">Mewtwo</div><div class="pokemon-info">Légendaire psychique. Grandes constructions requises.</div><div style="margin-top:6px"><span class="tag tag-red">⭐ Légendaire</span><span class="tag tag-purple">Psy</span></div></div>
+      <div class="pokemon-card" data-category="legendaire"><div class="pokemon-num">Légendaire</div><img class="pokemon-img" src="https://www.fuperfaufette.com/img/pokemon/artworks/250-250x250.png" onerror="this.style.display='none'" alt="Ho-Oh"><div class="pokemon-name">Ho-Oh</div><div class="pokemon-info">Légendaire feu/vol. Énormes constructions en fin de partie.</div><div style="margin-top:6px"><span class="tag tag-red">⭐ Légendaire</span><span class="tag tag-orange">Feu</span></div></div>
+      <div class="pokemon-card" data-category="legendaire"><div class="pokemon-num">Légendaire</div><img class="pokemon-img" src="https://www.fuperfaufette.com/img/pokemon/artworks/245-250x250.png" onerror="this.style.display='none'" alt="Suicune"><div class="pokemon-name">Suicune</div><div class="pokemon-info">Légendaire eau. Attirable via un habitat spécial.</div><div style="margin-top:6px"><span class="tag tag-red">⭐ Légendaire</span><span class="tag tag-blue">Eau</span></div></div>
+      <!-- Utilitaires -->
+      <div class="pokemon-card" data-category="utilitaire" style="border-color:#f5c842"><div class="pokemon-num">Top Utilitaire</div><img class="pokemon-img" src="https://www.fuperfaufette.com/img/pokemon/artworks/819-250x250.png" onerror="this.style.display='none'" alt="Forgelina"><div class="pokemon-name">Forgelina</div><div class="pokemon-info">Accélère les chantiers. Béton → Forgeliroues. Indispensable pour le Défi d'Initiation.</div><div style="margin-top:6px"><span class="tag tag-yellow">Top tier</span><span class="tag tag-orange">Construction</span></div></div>
+      <div class="pokemon-card" data-category="utilitaire"><div class="pokemon-num">Endgame</div><img class="pokemon-img" src="https://www.fuperfaufette.com/img/pokemon/artworks/081-250x250.png" onerror="this.style.display='none'" alt="Magnéti"><div class="pokemon-name">Magnéti</div><div class="pokemon-info">Débloque Vol Magnétik, la capacité ultime post-jeu.</div><div style="margin-top:6px"><span class="tag tag-yellow">Vol Magnétik</span><span class="tag tag-red">Post-jeu</span></div></div>
+      <div class="pokemon-card" data-category="utilitaire"><div class="pokemon-num">Utilitaire</div><img class="pokemon-img" src="https://www.fuperfaufette.com/img/pokemon/artworks/137-250x250.png" onerror="this.style.display='none'" alt="Porygon"><div class="pokemon-name">Porygon</div><div class="pokemon-info">Recyclage : déchets papier → piles de papier. Zone Flotiles.</div><div style="margin-top:6px"><span class="tag tag-teal">♻️ Recyclage</span></div></div>
+      <div class="pokemon-card" data-category="utilitaire"><div class="pokemon-num">Utilitaire</div><img class="pokemon-img" src="https://www.fuperfaufette.com/img/pokemon/artworks/415-250x250.png" onerror="this.style.display='none'" alt="Apireine"><div class="pokemon-name">Apireine</div><div class="pokemon-info">Bois → meubles automatiquement.</div><div style="margin-top:6px"><span class="tag tag-yellow">🪑 Meubles</span></div></div>
+      <div class="pokemon-card" data-category="utilitaire"><div class="pokemon-num">Utilitaire</div><img class="pokemon-img" src="https://www.fuperfaufette.com/img/pokemon/artworks/293-250x250.png" onerror="this.style.display='none'" alt="Wattouat"><div class="pokemon-name">Wattouat</div><div class="pokemon-info">Coton naturel ×5 via désordre. Requis Défi d'Initiation.</div><div style="margin-top:6px"><span class="tag tag-green">🐑 Coton</span></div></div>
+      <div class="pokemon-card" data-category="utilitaire"><div class="pokemon-num">Utilitaire</div><img class="pokemon-img" src="https://www.fuperfaufette.com/img/pokemon/artworks/007-250x250.png" onerror="this.style.display='none'" alt="Carapuce"><div class="pokemon-name">Carapuce</div><div class="pokemon-info">Apprend Pistolet à O — première capacité du jeu.</div><div style="margin-top:6px"><span class="tag tag-blue">💧 Pistolet à O</span></div></div>
+      <div class="pokemon-card" data-category="utilitaire"><div class="pokemon-num">Utilitaire</div><img class="pokemon-img" src="https://www.fuperfaufette.com/img/pokemon/artworks/236-250x250.png" onerror="this.style.display='none'" alt="Tygnon"><div class="pokemon-name">Tygnon</div><div class="pokemon-info">Apprend Éclate-Roc pour briser les passages bloqués.</div><div style="margin-top:6px"><span class="tag tag-orange">🪨 Éclate-Roc</span></div></div>
     </div>
   </div>
 
   <!-- QUOTIDIEN -->
+  <!-- ÉVÉNEMENTS -->
+  <div class="section" id="section-evenements">
+    <div class="section-header">
+      <div class="section-icon" style="background:linear-gradient(135deg,#f5c842,#e74c3c)">🎉</div>
+      <div><div class="section-title">Événements en cours</div><div class="section-desc">Événements limités et contenus spéciaux disponibles maintenant</div></div>
+    </div>
+
+    <div class="info-box"><span class="tip-icon">📡</span><div>Les événements sont mis à jour régulièrement via les <strong>Cadeaux Mystère en ligne</strong>. Pense à vérifier le PC dans le jeu pour récupérer les contenus limités !</div></div>
+
+    <!-- ÉVÉNEMENT EN COURS -->
+    <div style="margin-top:20px">
+      <div style="background:linear-gradient(135deg,#2d5a27,#3a7d44);border-radius:16px;padding:24px;color:white;margin-bottom:16px;position:relative;overflow:hidden;">
+        <div style="position:absolute;right:-10px;top:-10px;font-size:8rem;opacity:.07">🎉</div>
+        <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px">
+          <span style="background:rgba(255,255,255,.2);padding:4px 12px;border-radius:50px;font-size:.75rem;font-weight:700;letter-spacing:1px">EN COURS</span>
+          <span style="font-size:.8rem;opacity:.8">Depuis le lancement</span>
+        </div>
+        <div style="font-family:'Quicksand',sans-serif;font-size:1.4rem;font-weight:700;margin-bottom:8px">🌾 Des Aigrettes pour Granivol</div>
+        <p style="font-size:.9rem;opacity:.9;line-height:1.7;max-width:680px">Le premier événement officiel de Pokopia ! Granivol a besoin d'aigrettes pour retrouver son chemin. En participant à cet événement, de nouveaux Pokémon et habitats inédits sont ajoutés à ta tablette.</p>
+        <div style="margin-top:14px;display:flex;gap:10px;flex-wrap:wrap">
+          <div style="background:rgba(255,255,255,.15);border-radius:10px;padding:10px 16px;font-size:.85rem"><strong>🎁 Récompense</strong><br>Nouveaux schémas d'habitats</div>
+          <div style="background:rgba(255,255,255,.15);border-radius:10px;padding:10px 16px;font-size:.85rem"><strong>📍 Comment y accéder</strong><br>PC → Cadeaux Mystère en ligne</div>
+          <div style="background:rgba(255,255,255,.15);border-radius:10px;padding:10px 16px;font-size:.85rem"><strong>✨ Pokémon concerné</strong><br>Granivol</div>
+        </div>
+      </div>
+
+      <!-- ÉVÉNEMENTS À VENIR / PASSÉS -->
+      <h3 style="font-family:'Quicksand',sans-serif;color:var(--green-deep);margin:22px 0 12px;font-size:1.05rem">📋 Comment profiter des événements</h3>
+      <div class="cards-grid">
+        <div class="card">
+          <div class="card-title">🎮 Étape 1 — Connecte ta Switch</div>
+          <div class="card-content"><p>Assure-toi d'avoir une connexion internet active sur ta Nintendo Switch 2 et d'être connecté à ton compte Nintendo.</p></div>
+        </div>
+        <div class="card">
+          <div class="card-title">💻 Étape 2 — Le PC en jeu</div>
+          <div class="card-content"><p>Dans Pokopia, va au <strong>PC</strong> et sélectionne <strong>"Cadeaux Mystère en ligne"</strong>. Les événements actifs s'affichent ici automatiquement.</p></div>
+        </div>
+        <div class="card">
+          <div class="card-title">📦 Étape 3 — Récupère le contenu</div>
+          <div class="card-content"><p>Clique sur l'événement pour télécharger les nouveaux habitats, Pokémon ou objets. Ils s'ajoutent directement à ta tablette !</p></div>
+        </div>
+        <div class="card">
+          <div class="card-title">⏰ Attention aux dates !</div>
+          <div class="card-content"><p>Les événements sont <strong>limités dans le temps</strong>. Vérifie régulièrement le PC pour ne rien manquer. Consulte cette page pour rester informé.</p></div>
+        </div>
+      </div>
+
+      <div class="tip" style="margin-top:16px">
+        <span class="tip-icon">💡</span>
+        <div>Tu as découvert un nouvel événement pas encore listé ici ? <strong>Partage-le dans la section Communauté</strong> pour aider les autres joueurs !</div>
+      </div>
+
+      <div style="background:white;border:2px dashed var(--border);border-radius:14px;padding:30px;text-align:center;margin-top:16px">
+        <div style="font-size:2.5rem;margin-bottom:10px">🔜</div>
+        <div style="font-family:'Quicksand',sans-serif;font-weight:700;color:var(--green-deep);font-size:1rem;margin-bottom:6px">Prochain événement à venir</div>
+        <p style="font-size:.85rem;color:var(--text-muted)">Aucun événement annoncé pour le moment. Reviens bientôt ou surveille les réseaux sociaux officiels de Pokopia !</p>
+      </div>
+    </div>
+  </div>
+
   <div class="section" id="section-quotidien">
     <div class="section-header"><div class="section-icon" style="background:linear-gradient(135deg,#87ceeb,#3498db)">📅</div><div><div class="section-title">Routine Quotidienne</div><div class="section-desc">7 activités essentielles à faire chaque jour</div></div></div>
     <div class="info-box"><span class="tip-icon">⏰</span><div>Pokopia fonctionne en <strong>temps réel</strong>. Les activités journalières se réinitialisent toutes les 24h.</div></div>
@@ -586,13 +692,20 @@
   <div class="section" id="section-communaute">
     <div class="section-header">
       <div class="section-icon" style="background:linear-gradient(135deg,#9b59b6,#6c3483)">💬</div>
-      <div><div class="section-title">Espace Communautaire</div><div class="section-desc">Astuces partagées par les joueurs — votez et commentez !</div></div>
+      <div><div class="section-title">Espace Communautaire</div><div class="section-desc">Astuces, photos, discussions — tout partager !</div></div>
     </div>
 
+    <!-- FORUM TABS -->
+    <div class="forum-tabs">
+      <button class="forum-tab active" onclick="switchForumTab('astuces',this)">💡 Astuces</button>
+      <button class="forum-tab" onclick="switchForumTab('galerie',this)">📸 Galerie & Flex</button>
+    </div>
+
+    <!-- PANEL ASTUCES -->
+    <div class="forum-panel active" id="panel-astuces">
     <div class="community-layout">
       <!-- FEED -->
       <div>
-        <!-- FILTER -->
         <div class="filter-row" style="margin-bottom:16px">
           <button class="filter-btn active" onclick="loadTips('all',this)">Toutes</button>
           <button class="filter-btn" onclick="loadTips('Exploration',this)">🗺️ Exploration</button>
@@ -605,58 +718,103 @@
           <div class="loading-state"><div class="loading-spinner"></div>Chargement des astuces…</div>
         </div>
       </div>
-
       <!-- SIDEBAR -->
       <div>
         <div class="add-tip-panel" id="add-tip-panel">
           <div class="panel-title">✏️ Partager une astuce</div>
           <div id="add-tip-login-prompt" style="text-align:center;padding:20px 0">
             <div style="font-size:2.5rem;margin-bottom:12px">🌿</div>
-            <p style="font-size:.875rem;color:var(--text-muted);margin-bottom:16px">Connecte-toi pour partager tes astuces avec la communauté !</p>
+            <p style="font-size:.875rem;color:var(--text-muted);margin-bottom:16px">Connecte-toi pour partager tes astuces !</p>
             <button class="form-submit" onclick="openAuthModal()">🎮 Se connecter</button>
           </div>
           <div id="add-tip-form" style="display:none">
-            <div class="form-group">
-              <label class="form-label">Catégorie</label>
-              <select class="form-select" id="tip-category">
-                <option value="Exploration">🗺️ Exploration</option>
-                <option value="Construction">🏗️ Construction</option>
-                <option value="Ressources">⛏️ Ressources</option>
-                <option value="Habitats">🏡 Habitats</option>
-                <option value="Pokémon">✨ Pokémon</option>
-              </select>
-            </div>
-            <div class="form-group">
-              <label class="form-label">Titre de l'astuce</label>
-              <input type="text" class="form-input" id="tip-title" placeholder="Ex: Comment obtenir la glace facilement" maxlength="100">
-            </div>
-            <div class="form-group">
-              <label class="form-label">Détails</label>
-              <textarea class="form-textarea" id="tip-text" placeholder="Explique ton astuce en détail…" maxlength="500"></textarea>
-            </div>
-            <button class="form-submit" id="submit-tip-btn" onclick="submitTip()">🌿 Partager l'astuce</button>
+            <div class="form-group"><label class="form-label">Catégorie</label><select class="form-select" id="tip-category"><option value="Exploration">🗺️ Exploration</option><option value="Construction">🏗️ Construction</option><option value="Ressources">⛏️ Ressources</option><option value="Habitats">🏡 Habitats</option><option value="Pokémon">✨ Pokémon</option></select></div>
+            <div class="form-group"><label class="form-label">Titre</label><input type="text" class="form-input" id="tip-title" placeholder="Ex: Comment obtenir la glace" maxlength="100"></div>
+            <div class="form-group"><label class="form-label">Détails</label><textarea class="form-textarea" id="tip-text" placeholder="Explique ton astuce…" maxlength="500"></textarea></div>
+            <button class="form-submit" id="submit-tip-btn" onclick="submitTip()">🌿 Partager</button>
           </div>
         </div>
-
-        <!-- STATS -->
         <div style="background:white;border:2px solid var(--border);border-radius:14px;padding:18px;margin-top:14px">
           <div class="panel-title">📊 Statistiques</div>
           <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
-            <div style="text-align:center;padding:12px;background:var(--green-ultra);border-radius:10px">
-              <div style="font-family:'Quicksand',sans-serif;font-size:1.6rem;font-weight:700;color:var(--green-deep)" id="stat-tips">—</div>
-              <div style="font-size:.72rem;color:var(--text-muted);text-transform:uppercase;letter-spacing:.5px">Astuces</div>
+            <div style="text-align:center;padding:12px;background:var(--green-ultra);border-radius:10px"><div style="font-family:'Quicksand',sans-serif;font-size:1.6rem;font-weight:700;color:var(--green-deep)" id="stat-tips">—</div><div style="font-size:.72rem;color:var(--text-muted);text-transform:uppercase;letter-spacing:.5px">Astuces</div></div>
+            <div style="text-align:center;padding:12px;background:var(--gold-light);border-radius:10px"><div style="font-family:'Quicksand',sans-serif;font-size:1.6rem;font-weight:700;color:#92600a" id="stat-votes">—</div><div style="font-size:.72rem;color:var(--text-muted);text-transform:uppercase;letter-spacing:.5px">Votes</div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+    </div>
+
+    <!-- PANEL GALERIE -->
+    <div class="forum-panel" id="panel-galerie">
+      <div class="community-layout">
+        <!-- PHOTO FEED -->
+        <div>
+          <div class="filter-row" style="margin-bottom:16px">
+            <button class="filter-btn active" onclick="loadPhotos('all',this)">Tous</button>
+            <button class="filter-btn" onclick="loadPhotos('Flex',this)">💪 Flex</button>
+            <button class="filter-btn" onclick="loadPhotos('Problème',this)">🆘 Problème</button>
+            <button class="filter-btn" onclick="loadPhotos('Habitat',this)">🏡 Habitat</button>
+            <button class="filter-btn" onclick="loadPhotos('Autre',this)">✨ Autre</button>
+          </div>
+          <div id="photo-feed">
+            <div class="loading-state"><div class="loading-spinner"></div>Chargement des photos…</div>
+          </div>
+        </div>
+
+        <!-- SIDEBAR UPLOAD -->
+        <div>
+          <div class="add-tip-panel">
+            <div class="panel-title">📸 Partager une photo</div>
+            <div id="add-photo-login-prompt" style="text-align:center;padding:20px 0">
+              <div style="font-size:2.5rem;margin-bottom:12px">📷</div>
+              <p style="font-size:.875rem;color:var(--text-muted);margin-bottom:16px">Connecte-toi pour poster tes screenshots !</p>
+              <button class="form-submit" onclick="openAuthModal()">🎮 Se connecter</button>
             </div>
-            <div style="text-align:center;padding:12px;background:var(--gold-light);border-radius:10px">
-              <div style="font-family:'Quicksand',sans-serif;font-size:1.6rem;font-weight:700;color:#92600a" id="stat-votes">—</div>
-              <div style="font-size:.72rem;color:var(--text-muted);text-transform:uppercase;letter-spacing:.5px">Votes</div>
+            <div id="add-photo-form" style="display:none">
+              <div class="form-group">
+                <label class="form-label">Type de post</label>
+                <select class="form-select" id="photo-type">
+                  <option value="Flex">💪 Flex — montrer une réalisation</option>
+                  <option value="Problème">🆘 Problème — besoin d'aide</option>
+                  <option value="Habitat">🏡 Mon habitat</option>
+                  <option value="Autre">✨ Autre</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label class="form-label">Description</label>
+                <textarea class="form-textarea" id="photo-caption" placeholder="Décris ta photo, pose ta question…" maxlength="300" style="min-height:70px"></textarea>
+              </div>
+              <div class="form-group">
+                <label class="form-label">Image (URL)</label>
+                <input type="url" class="form-input" id="photo-url" placeholder="https://i.imgur.com/... ou lien image">
+                <p style="font-size:.72rem;color:var(--text-muted);margin-top:5px">💡 Uploade d'abord sur <a href="https://imgur.com" target="_blank" style="color:var(--green-mid)">imgur.com</a> puis colle le lien ici</p>
+              </div>
+              <div id="photo-preview-wrap" style="display:none;margin-bottom:12px">
+                <img id="photo-preview-img" src="" alt="" style="width:100%;max-height:180px;object-fit:cover;border-radius:10px;border:2px solid var(--border)">
+              </div>
+              <button class="form-submit" id="submit-photo-btn" onclick="submitPhoto()">📸 Poster la photo</button>
+            </div>
+          </div>
+
+          <div style="background:white;border:2px solid var(--border);border-radius:14px;padding:18px;margin-top:14px">
+            <div class="panel-title">📊 Galerie</div>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+              <div style="text-align:center;padding:12px;background:var(--sky-light);border-radius:10px"><div style="font-family:'Quicksand',sans-serif;font-size:1.6rem;font-weight:700;color:var(--blue)" id="stat-photos">—</div><div style="font-size:.72rem;color:var(--text-muted);text-transform:uppercase;letter-spacing:.5px">Photos</div></div>
+              <div style="text-align:center;padding:12px;background:#fde8e8;border-radius:10px"><div style="font-family:'Quicksand',sans-serif;font-size:1.6rem;font-weight:700;color:var(--red)" id="stat-photo-likes">—</div><div style="font-size:.72rem;color:var(--text-muted);text-transform:uppercase;letter-spacing:.5px">Likes</div></div>
             </div>
           </div>
         </div>
       </div>
     </div>
-  </div>
 
 </main>
+
+<!-- LIGHTBOX -->
+<div class="lightbox hidden" id="lightbox" onclick="closeLightbox()">
+  <button class="lightbox-close" onclick="event.stopPropagation();closeLightbox()">✕</button>
+  <img id="lightbox-img" src="" alt="">
+</div>
 
 <button id="scroll-top" onclick="window.scrollTo({top:0,behavior:'smooth'})">↑</button>
 
@@ -960,10 +1118,142 @@ overlayEl.addEventListener('click', () => { searchResultsEl.classList.remove('vi
 
 window.addEventListener('scroll', () => { document.getElementById('scroll-top').classList.toggle('visible', window.scrollY > 300); });
 
+// ==================== FORUM TABS ====================
+function switchForumTab(tab, btn) {
+  document.querySelectorAll('.forum-tab').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.forum-panel').forEach(p => p.classList.remove('active'));
+  btn.classList.add('active');
+  document.getElementById('panel-' + tab).classList.add('active');
+  if (tab === 'galerie') loadPhotos('all', null);
+}
+
+// ==================== PHOTO FORUM ====================
+let currentPhotoFilter = 'all';
+let userPhotoLikes = new Set();
+
+async function loadPhotos(filter, btn) {
+  if(btn){ document.querySelectorAll('#panel-galerie .filter-btn').forEach(b=>b.classList.remove('active')); btn.classList.add('active'); }
+  currentPhotoFilter = filter;
+  document.getElementById('photo-feed').innerHTML = '<div class="loading-state"><div class="loading-spinner"></div>Chargement…</div>';
+  let query = db.from('photos').select('*, profiles(username)').order('created_at', { ascending: false });
+  if (filter !== 'all') query = query.eq('type', filter);
+  const { data, error } = await query;
+  if (error || !data) { document.getElementById('photo-feed').innerHTML = '<div class="empty-state"><div class="empty-icon">⚠️</div><div class="empty-title">Erreur de chargement</div></div>'; return; }
+  if (data.length === 0) {
+    document.getElementById('photo-feed').innerHTML = '<div class="empty-state"><div class="empty-icon">📸</div><div class="empty-title">Aucune photo pour le moment</div><p>Sois le premier à partager !</p></div>';
+    return;
+  }
+  const typeColors = { 'Flex':'badge-flex', 'Problème':'badge-probleme', 'Habitat':'badge-habitat', 'Autre':'badge-autre' };
+  const typeEmojis = { 'Flex':'💪', 'Problème':'🆘', 'Habitat':'🏡', 'Autre':'✨' };
+  document.getElementById('photo-feed').innerHTML = `<div class="photo-grid">${data.map(p => {
+    const u = p.profiles?.username || 'Dresseur';
+    const liked = userPhotoLikes.has(p.id);
+    const date = new Date(p.created_at).toLocaleDateString('fr-FR', {day:'numeric',month:'short'});
+    return `<div class="photo-post">
+      <div class="photo-post-img" onclick="openLightbox('${escapeHtml(p.image_url)}')">
+        <img src="${escapeHtml(p.image_url)}" alt="" onerror="this.parentNode.innerHTML='📷'" loading="lazy">
+      </div>
+      <div class="photo-post-body">
+        <span class="photo-type-badge ${typeColors[p.type]||'badge-autre'}">${typeEmojis[p.type]||'✨'} ${p.type}</span>
+        <div class="photo-post-author">
+          <div class="photo-post-avatar">${u[0].toUpperCase()}</div>
+          <div><div class="photo-post-username">${escapeHtml(u)}</div><div style="font-size:.7rem;color:var(--text-muted)">${date}</div></div>
+        </div>
+        ${p.caption ? `<div class="photo-post-caption">${escapeHtml(p.caption)}</div>` : ''}
+        <div class="photo-post-actions">
+          <button class="vote-btn ${liked?'voted':''}" onclick="likePhoto('${p.id}',this)" ${liked?'disabled':''}>❤️ <span id="likes-${p.id}">${p.likes||0}</span></button>
+          <button class="comment-toggle-btn" onclick="toggleComments('${p.id}')">💬 <span id="comment-count-${p.id}">0</span></button>
+        </div>
+        <div class="comments-section" id="comments-${p.id}">
+          <div id="comments-list-${p.id}"></div>
+          ${currentUser ? `<div class="comment-input-row"><input type="text" class="comment-input" id="comment-input-${p.id}" placeholder="Commenter…" maxlength="200" onkeydown="if(event.key==='Enter')submitComment('${p.id}')"><button class="comment-submit" onclick="submitComment('${p.id}')">↵</button></div>` : ''}
+        </div>
+      </div>
+    </div>`;
+  }).join('')}</div>`;
+  updatePhotoStats();
+}
+
+async function submitPhoto() {
+  if (!currentUser) { openAuthModal(); return; }
+  const url = document.getElementById('photo-url').value.trim();
+  const caption = document.getElementById('photo-caption').value.trim();
+  const type = document.getElementById('photo-type').value;
+  if (!url) { showToast('Ajoute un lien image ! 📸'); return; }
+  const btn = document.getElementById('submit-photo-btn');
+  btn.disabled = true; btn.textContent = 'Envoi…';
+  const { error } = await db.from('photos').insert({ user_id: currentUser.id, image_url: url, caption, type, likes: 0 });
+  btn.disabled = false; btn.textContent = '📸 Poster la photo';
+  if (!error) {
+    document.getElementById('photo-url').value = '';
+    document.getElementById('photo-caption').value = '';
+    document.getElementById('photo-preview-wrap').style.display = 'none';
+    loadPhotos(currentPhotoFilter, null);
+    showToast('Photo postée ! 📸');
+  } else { showToast('Erreur lors de l\'envoi.'); }
+}
+
+async function likePhoto(photoId, btn) {
+  if (!currentUser) { openAuthModal(); return; }
+  if (userPhotoLikes.has(photoId)) return;
+  const { error } = await db.rpc('increment_photo_likes', { photo_id: photoId, user_id: currentUser.id });
+  if (!error) {
+    userPhotoLikes.add(photoId);
+    btn.classList.add('voted'); btn.disabled = true;
+    const el = document.getElementById(`likes-${photoId}`);
+    el.textContent = parseInt(el.textContent) + 1;
+    showToast('Liked ! ❤️');
+  }
+}
+
+async function updatePhotoStats() {
+  const { count } = await db.from('photos').select('*', { count: 'exact', head: true });
+  const { data } = await db.from('photos').select('likes');
+  const totalLikes = data?.reduce((a,p) => a+(p.likes||0), 0) || 0;
+  const el1 = document.getElementById('stat-photos');
+  const el2 = document.getElementById('stat-photo-likes');
+  if(el1) el1.textContent = count || 0;
+  if(el2) el2.textContent = totalLikes;
+}
+
+// Preview image URL
+document.addEventListener('input', function(e) {
+  if(e.target.id === 'photo-url') {
+    const url = e.target.value.trim();
+    const wrap = document.getElementById('photo-preview-wrap');
+    const img = document.getElementById('photo-preview-img');
+    if(url) { img.src = url; wrap.style.display = 'block'; }
+    else { wrap.style.display = 'none'; }
+  }
+});
+
+// Update setUser to show photo form
+const _origSetUser = setUser;
+// After auth, show photo form
+function updatePhotoAuthUI() {
+  const prompt = document.getElementById('add-photo-login-prompt');
+  const form = document.getElementById('add-photo-form');
+  if (currentUser) { if(prompt)prompt.style.display='none'; if(form)form.style.display='block'; }
+  else { if(prompt)prompt.style.display='block'; if(form)form.style.display='none'; }
+}
+
+// LIGHTBOX
+function openLightbox(url) {
+  document.getElementById('lightbox-img').src = url;
+  document.getElementById('lightbox').classList.remove('hidden');
+  document.body.style.overflow = 'hidden';
+}
+function closeLightbox() {
+  document.getElementById('lightbox').classList.add('hidden');
+  document.body.style.overflow = '';
+}
+document.addEventListener('keydown', e => { if(e.key === 'Escape') closeLightbox(); });
+
 // INIT
 initAuth();
-// Load stats on page load
 updateStats();
+// Watch auth changes to update photo UI
+db.auth.onAuthStateChange(() => { setTimeout(updatePhotoAuthUI, 100); });
 </script>
 </body>
 </html>
